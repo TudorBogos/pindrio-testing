@@ -1,0 +1,23 @@
+{
+  "name": "pindrio-testing",
+  "version": "1.0.0",
+  "description": "playwright automated test for pindrio",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TudorBogos/pindrio-testing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/TudorBogos/pindrio-testing/issues"
+  },
+  "homepage": "https://github.com/TudorBogos/pindrio-testing#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.54.2",
+    "@types/node": "^24.2.0"
+  }
+}

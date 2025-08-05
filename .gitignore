@@ -41,7 +41,8 @@ build/Release
 node_modules/
 jspm_packages/
 
-# Snowpack dependency directory (https://snowpack.dev/)
+ Snowpack dependency directory (https://snowpack.dev/)
+ :wq
 web_modules/
 
 # TypeScript cache
@@ -137,3 +138,13 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/test-examples
+test-examples/
+
+.~lock.QA Activities List – Automated Tests.odt#
