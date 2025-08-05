@@ -35,14 +35,18 @@ export const createTestContext = () => {
     };
 };
 
+export async function acceptCookies(page: Page) {
+    const acceptButton = page.getByRole('button', { name: 'Accept' });
+    if (await acceptButton.isVisible()) {
+        await acceptButton.click();
+    }
+}
+
 export async function signUp(page: Page, ctx: TestContext) {
     try {
         await page.goto('https://ioto-marketplace.semiotic.eu/');
 
-        const acceptButton = page.getByRole('button', { name: 'Accept' });
-        if (await acceptButton.isVisible()) {
-            await acceptButton.click();
-        }
+        await acceptCookies(page);
 
         await page.getByRole('button', { name: 'Log in/Join IoTo club' }).click();
 
@@ -90,10 +94,7 @@ export async function logIn(page: Page, ctx: TestContext) {
 
         await page.waitForLoadState('networkidle');
 
-        const acceptButton = page.getByRole('button', { name: 'Accept' });
-        if (await acceptButton.isVisible()) {
-            await acceptButton.click();
-        }
+        await acceptCookies(page);
 
         await page.getByRole('button', { name: 'Log in/Join IoTo club' }).click();
 
@@ -121,8 +122,62 @@ export async function logIn(page: Page, ctx: TestContext) {
 
 export async function logOut (page: Page, ctx:TestContext) {
     await page.goto('https://ioto-marketplace.semiotic.eu/');
-    await page.getByRole('button', { name: 'Hello! Andrei Munteanu' }).click();
+    await acceptCookies(page);
+    await page.getByRole('button', { name: /Hello! \w+ \w+/ }).click();
     await page.getByRole('button', { name: 'Sign out' }).click();
     await expect(page.getByRole('button', { name: 'Log in/Join IoTo club' })).toBeVisible();
+
+}
+
+export async function editProfileRevert(page:Page, ctx:TestContext) {
+    await acceptCookies(page);
+    await page.goto('https://ioto-marketplace.semiotic.eu/');
+
+    const profileBtn =  page.getByRole('button', { name: /Hello! \w+ \w+/ });
+
+    await profileBtn.click();
+    await profileBtn.click();
+    await profileBtn.click();
+
+    const accountOverviewBtn = page.getByRole('link', { name: 'Account Overview' });
+    await accountOverviewBtn.click();
+
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('link', { name: 'Profile' }).click();
+
+    const nameTextbox = page.locator('input[name="first_name"]');
+    await nameTextbox.click();
+    await nameTextbox.fill('TestName');
+
+    const lastNameTextbox = page.locator('input[name="last_name"]');
+    await lastNameTextbox.click();
+    await lastNameTextbox.fill('TestLastName');
+
+    const saveButton=page.getByRole('button', { name: 'Save' });
+    await saveButton.isEnabled();
+    await saveButton.click();
+
+    await page.waitForLoadState('networkidle');
+
+    await expect(nameTextbox).toHaveValue('TestName');
+    await expect(lastNameTextbox).toHaveValue('TestLastName');
+
+    await lastNameTextbox.isEnabled();
+    await lastNameTextbox.click();
+    await lastNameTextbox.fill('Munteanu');
+
+    await nameTextbox.isEnabled();
+    await nameTextbox.click();
+    await nameTextbox.fill('Andrei');
+
+    await saveButton.isEnabled();
+    await saveButton.click();
+
+    await page.waitForLoadState('networkidle');
+
+    await expect(nameTextbox).toHaveValue('Andrei');
+    await expect(lastNameTextbox).toHaveValue('Munteanu');
+
 
 }
