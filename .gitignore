@@ -148,3 +148,4 @@ vite.config.ts.timestamp-*
 tests-examples/
 
 .~lock.QA Activities List – Automated Tests.odt#
+/.idea/
