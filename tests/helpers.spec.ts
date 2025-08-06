@@ -92,7 +92,6 @@ export async function logIn(page: Page, ctx: TestContext) {
     try {
         await page.goto('https://ioto-marketplace.semiotic.eu/');
 
-        await page.waitForLoadState('networkidle');
 
         await acceptCookies(page);
 
@@ -142,42 +141,66 @@ export async function editProfileRevert(page:Page, ctx:TestContext) {
     const accountOverviewBtn = page.getByRole('link', { name: 'Account Overview' });
     await accountOverviewBtn.click();
 
-    await page.waitForLoadState('networkidle');
+    await expect(page.getByRole('link', { name: 'Profile' })).toBeVisible();
 
     await page.getByRole('link', { name: 'Profile' }).click();
 
     const nameTextbox = page.locator('input[name="first_name"]');
+    await expect(nameTextbox).toBeVisible()
     await nameTextbox.click();
     await nameTextbox.fill('TestName');
 
     const lastNameTextbox = page.locator('input[name="last_name"]');
+    await expect(lastNameTextbox).toBeVisible()
     await lastNameTextbox.click();
     await lastNameTextbox.fill('TestLastName');
 
+    await page.waitForTimeout(3000)
     const saveButton=page.getByRole('button', { name: 'Save' });
+    await saveButton.waitFor({ state: 'visible' });
     await saveButton.isEnabled();
     await saveButton.click();
 
-    await page.waitForLoadState('networkidle');
+    await expect(nameTextbox).toBeVisible()
+    await expect(lastNameTextbox).toBeVisible()
 
     await expect(nameTextbox).toHaveValue('TestName');
     await expect(lastNameTextbox).toHaveValue('TestLastName');
 
+
     await lastNameTextbox.isEnabled();
+    await expect(lastNameTextbox).toBeVisible()
     await lastNameTextbox.click();
     await lastNameTextbox.fill('Munteanu');
 
     await nameTextbox.isEnabled();
+    await expect(nameTextbox).toBeVisible()
     await nameTextbox.click();
     await nameTextbox.fill('Andrei');
 
+    await page.waitForTimeout(3000)
+    await saveButton.waitFor({ state: 'visible' });
     await saveButton.isEnabled();
     await saveButton.click();
 
-    await page.waitForLoadState('networkidle');
+    await expect(nameTextbox).toBeVisible()
+    await expect(lastNameTextbox).toBeVisible()
 
     await expect(nameTextbox).toHaveValue('Andrei');
     await expect(lastNameTextbox).toHaveValue('Munteanu');
+
+
+}
+
+export async function removeEverythingFromCart(page:Page, ctx:TestContext){
+
+    await page.goto(`https://ioto-marketplace.semiotic.eu/cart`)
+
+    const removeButtons = await page.getByRole('button').filter({ hasText: 'Remove' }).all();
+
+    for (const button of removeButtons) {
+        await button.click();
+    }
 
 
 }
