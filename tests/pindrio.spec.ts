@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import {
   createTestContext,
   testContext,
-  performCheckout,
+  addOneItemToCart,
 } from './helpers.spec'
 import {pindrioHomePage} from "../pages/pindrioHomePage";
 import {pindrioSignUpPage} from "../pages/pindrioSignUp";
@@ -66,6 +66,9 @@ test ('Checkout', async ({ page }) => {
 
   await cartPage.removeEverythingFromCart();
 
-  await performCheckout(page, ctx);
+  await addOneItemToCart(page, ctx);
+
+  const checkoutPage=await cartPage.performCheckout();
+  await checkoutPage.fillInfo(ctx);
 
 })

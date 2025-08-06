@@ -1,17 +1,21 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { acceptCookies, TestContext } from '../tests/helpers.spec';
+import {pindrioLoginPage} from "./pindrioLogin";
+import {pindrioChechoutPage} from "./pindrioCheckoutPage";
 
 export class pindrioCart {
     readonly page: Page;
     readonly itemsExist: Locator;
     readonly itemsDontExist: Locator;
     readonly removeButtons: Promise<Locator[]>;
+    readonly checkoutButton: Locator;
 
     constructor(page: Page) {
         this.page = page;
         this.itemsExist = page.getByText('Product Summary');
         this.itemsDontExist = page.getByRole('heading', { name: 'Your shopping bag is empty' });
         this.removeButtons = page.getByRole('button').filter({ hasText: 'Remove' }).all();
+        this.checkoutButton=page.getByRole('button', { name: 'Go to checkout' });
     }
 
     async goto() {
@@ -24,33 +28,39 @@ export class pindrioCart {
         await this.page.waitForLoadState('networkidle');
 
         await this.itemsExist.waitFor({ state: 'visible' }).catch(e => {
-            console.log('No items found in the cart.');
+
         });
 
         if (await this.itemsExist.isVisible()) {
-            console.log('Products exist in the cart.');
 
             const removeButtons = await this.page.getByRole('button').filter({ hasText: 'Remove' }).all();
-            console.log(`Found ${removeButtons.length} remove buttons.`);
 
             if (removeButtons.length === 0) {
-                console.log('Cart is empty.');
             } else {
                 for (const button of removeButtons) {
                     await button.waitFor({ state: 'visible' });
-                    console.log('Button is visible, attempting to click.');
                     try {
                         await button.click();
-                        console.log('Successfully clicked the remove button.');
                         await this.page.waitForTimeout(1000);
                     } catch (error) {
-                        console.error('Failed to click the remove button:', error);
+                        console.error( error);
                     }
                 }
             }
         } else if (await this.itemsDontExist.isVisible()) {
-            console.log('No products in the cart.');
         }
+    }
+    async performCheckout(){
+        await this.goto();
+        await this.page.waitForLoadState('load');
+        await this.page.waitForLoadState('networkidle');
+
+        await this.checkoutButton.click();
+        await this.page.waitForLoadState('load');
+        await this.page.waitForLoadState('networkidle');
+        return new pindrioChechoutPage(this.page);
+
+
     }
 
 }

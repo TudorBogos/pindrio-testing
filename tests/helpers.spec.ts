@@ -6,32 +6,51 @@ export type TestContext = {
     firstName: string;
     lastName: string;
     phone: string;
+    alias: string;
+    apartmentSuite:string;
+    city:string;
+    country: string;
+    county:string;
+    postalCode: string;
+    shippingAddress: string;
 };
 
 let cachedTestCtx: TestContext | null = null;
 
 export function testContext(): TestContext {
     if (!cachedTestCtx) {
-/*        const rand:  number = Math.floor(Math.random() * (1000  + 1));*/
         cachedTestCtx = {
+            alias: 'AndreiM',
+            apartmentSuite: '12',
+            city: 'Galati',
+            country: 'Romania',
+            county: 'Galati',
+            email: `andreimunteanu7@yahoo.com`,
             firstName: `Andrei`,
             lastName: `Munteanu`,
-            email: `andreimunteanu7@yahoo.com`,
             password: `%Test123`,
-            phone: '0728563846'
+            phone: '0728563846',
+            postalCode: '937022',
+            shippingAddress: 'Strada Traian',
         };
     }
     return cachedTestCtx;
 }
 
 export const createTestContext = () => {
-/*    const rand:  number = Math.floor(Math.random() * (1000  + 1));*/
     return {
+        aliasN: 'AndreiM',
+        apartmentSuite: '12',
+        city: 'Galati',
+        country: 'Romania',
+        county: 'Galati',
+        email: `andreimunteanu7@yahoo.com`,
         firstName: `Andrei`,
         lastName: `Munteanu`,
-        email: `andreimunteanu7@yahoo.com`,
         password: `%Test123`,
-        phone: '0728563846'
+        phone: '0728563846',
+        postalCode: '937022',
+        shippingAddress: 'Strada Traian',
     };
 };
 
@@ -42,7 +61,7 @@ export async function acceptCookies(page: Page) {
     }
 }
 
-export async function performCheckout(page: Page, ctx: TestContext) {
+export async function addOneItemToCart(page: Page, ctx: TestContext) {
     const btnAllProducts = page.getByRole('button', { name: 'open menu' });
     await expect(btnAllProducts).toBeVisible();
     await page.hover("//button[@aria-label='open menu' and @class='flex items-center justify-center py-2 px-4']");
