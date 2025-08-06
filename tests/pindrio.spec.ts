@@ -1,17 +1,31 @@
 import { test, expect } from "@playwright/test";
 import {
-  createTestContext,
   testContext,
   addOneItemToCart,
+  testContextUnique,
 } from "./helpers.spec";
 import { pindrioHomePage } from "../pages/pindrioHomePage";
 import { pindrioSignUpPage } from "../pages/pindrioSignUp";
 import { pindrioProfilePage } from "../pages/pindrioProfile";
 import { pindrioCart } from "../pages/pindrioCart";
+import { activateAccount } from "./email.spec";
 
 const ctx = testContext();
+const ctxUnique = testContextUnique();
 
-test("Test Login", async ({ page }) => {
+test("Test Sign Up", async ({ page }) => {
+  test.setTimeout(180_000);
+
+  const signUpPage = new pindrioSignUpPage(page);
+
+  await signUpPage.signUp(ctxUnique);
+
+  await activateAccount(page);
+
+  await expect(page.getByText("Activation successful")).toBeVisible();
+});
+
+test("Test Login with safe account", async ({ page }) => {
   test.setTimeout(180_000);
 
   const homePage = new pindrioHomePage(page);
@@ -21,16 +35,6 @@ test("Test Login", async ({ page }) => {
   await loginPage.login(ctx);
 
   await expect(homePage.loggedInButton).toBeVisible();
-});
-
-test("Test Sign Up", async ({ page }) => {
-  test.setTimeout(180_000);
-
-  const signUpPage = new pindrioSignUpPage(page);
-
-  await signUpPage.signUp(ctx);
-
-  await expect(page.getByText("This email address is already")).toBeVisible();
 });
 
 test("Edit Profile", async ({ page }) => {

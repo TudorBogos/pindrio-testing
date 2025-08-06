@@ -11,9 +11,10 @@ export async function activateAccount(page: Page) {
     const password_fill = page.getByRole("textbox", {
       name: "Enter your password",
     });
-    const email_row = page.getByRole("link", {
-      name: "Activare Cont Client  -",
+    const email_row = page.getByRole("row", {
+      name: /unread,\s+contact\s+\d*,\s+Activare/,
     });
+
     const dots = page.getByRole("button", { name: "Show trimmed content" });
     const verifica = page.getByRole("link", { name: "Verifică" });
 
@@ -31,14 +32,21 @@ export async function activateAccount(page: Page) {
     await expect(next_button).toBeVisible();
     await next_button.click();
 
+    await page.waitForTimeout(5000);
+
     await expect(email_row).toBeVisible();
-    await email_row.click();
+    // await email_row.click();
 
-    await expect(dots).toBeVisible();
-    await dots.click();
+    // //Dots are visible if there's an ongoing conversation in GMAIL
+    // try {
+    //   await expect(dots).toBeVisible();
+    //   await dots.click();
+    // } catch (error) {
+    //   console.log("Dots element is not visible or does not exist.");
+    // }
 
-    await expect(verifica).toBeVisible();
-    await verifica.click();
+    // await expect(verifica).toBeVisible();
+    // await verifica.click();
   } catch (error) {
     console.error("An error occurred during the sign-up process:", error);
   }

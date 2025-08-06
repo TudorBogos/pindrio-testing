@@ -15,9 +15,8 @@ export type TestContext = {
   shippingAddress: string;
 };
 
-let cachedTestCtx: TestContext | null = null;
-
 export function testContext(): TestContext {
+  let cachedTestCtx: TestContext | null = null;
   if (!cachedTestCtx) {
     cachedTestCtx = {
       alias: "AndreiM",
@@ -37,22 +36,38 @@ export function testContext(): TestContext {
   return cachedTestCtx;
 }
 
-export const createTestContext = () => {
-  return {
-    aliasN: "AndreiM",
-    apartmentSuite: "12",
-    city: "Galati",
-    country: "Romania",
-    county: "Galati",
-    email: `andreimunteanu7@yahoo.com`,
-    firstName: `Andrei`,
-    lastName: `Munteanu`,
-    password: `%Test123`,
-    phone: "0728563846",
-    postalCode: "937022",
-    shippingAddress: "Strada Traian",
-  };
-};
+//Functie pentru creare date de logare unice cu un id unic format din yymmddhhmm
+export function testContextUnique(): TestContext {
+  let cachedTestCtx: TestContext | null = null;
+  const now = new Date();
+
+  const year = String(now.getFullYear()).slice(-2);
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+
+  const uniqueID = `${year}${month}${day}${hours}${minutes}${seconds}`;
+
+  if (!cachedTestCtx) {
+    cachedTestCtx = {
+      alias: "Tudor Andrei",
+      apartmentSuite: "16",
+      city: "Galati",
+      country: "Romania",
+      county: "Galati",
+      email: `tudorandreimunca+${uniqueID}@gmail.com`,
+      firstName: `Andrei`,
+      lastName: `Tudor`,
+      password: `%Test123`,
+      phone: "0747222222",
+      postalCode: "937022",
+      shippingAddress: "Bld. Henri Coanda 5",
+    };
+  }
+  return cachedTestCtx;
+}
 
 export async function acceptCookies(page: Page) {
   const acceptButton = page.getByRole("button", { name: "Accept" });
