@@ -1,37 +1,55 @@
 import { test, expect } from '@playwright/test';
 import {
-  logIn,
-  logOut,
-  signUp,
   createTestContext,
   testContext,
-  editProfileRevert,
-  removeEverythingFromCart, checkout
+  performCheckout,
 } from './helpers.spec'
-import {sign} from "node:crypto";
+import {pindrioHomePage} from "../pages/pindrioHomePage";
+import {pindrioSignUpPage} from "../pages/pindrioSignUp";
+import {pindrioProfilePage} from "../pages/pindrioProfile";
+import {pindrioCart} from "../pages/pindrioCart";
 
 const ctx = testContext();
 
 test('Test Login', async ({ page }) => {
   test.setTimeout(180_000);
 
-  await logIn(page,ctx);
-  await logOut(page,ctx);
+  const homePage = new pindrioHomePage(page);
+
+  const loginPage = await homePage.goToLogIn();
+
+  await loginPage.login(ctx);
+
+  await expect(homePage.loggedInButton).toBeVisible();
+
 
 });
 
 test('Test Sign Up', async ({ page }) => {
   test.setTimeout(180_000);
 
-  await signUp(page,ctx);
+  const signUpPage = new pindrioSignUpPage(page);
+
+
+  await signUpPage.signUp(ctx);
+
+
   await expect(page.getByText('This email address is already')).toBeVisible();
 });
 
 test('Edit Profile', async ({ page }) => {
   test.setTimeout(180_000);
 
-  await logIn(page,ctx);
-  await editProfileRevert(page,ctx);
+
+  const homePage = new pindrioHomePage(page);
+  const loginPage = await homePage.goToLogIn();
+
+
+  await loginPage.login(ctx);
+
+  const profilePage = new pindrioProfilePage(page);
+
+  await profilePage.editProfileRevert(ctx);
 
 });
 
@@ -39,6 +57,15 @@ test ('Checkout', async ({ page }) => {
 
   test.setTimeout(180_000);
 
-  await checkout(page, ctx);
+  const homePage = new pindrioHomePage(page);
+  const loginPage = await homePage.goToLogIn();
+
+  await loginPage.login(ctx);
+
+  const cartPage = new pindrioCart(page);
+
+  await cartPage.removeEverythingFromCart();
+
+  await performCheckout(page, ctx);
 
 })
