@@ -128,8 +128,47 @@ export async function logOut (page: Page, ctx:TestContext) {
 
 }
 
+export async function resetName(page:Page, ctx:TestContext){
+    await page.goto('https://ioto-marketplace.semiotic.eu/');
+
+    const profileBtn =  page.getByRole('button', { name: /Hello! \w+ \w+/ });
+
+    await profileBtn.click();
+    await profileBtn.click();
+    await profileBtn.click();
+
+    const accountOverviewBtn = page.getByRole('link', { name: 'Account Overview' });
+    await accountOverviewBtn.click();
+
+    await expect(page.getByRole('link', { name: 'Profile' })).toBeVisible();
+
+    await page.getByRole('link', { name: 'Profile' }).click();
+
+    const nameTextbox = page.locator('input[name="first_name"]');
+    await expect(nameTextbox).toBeVisible()
+    await nameTextbox.click();
+    await nameTextbox.fill('Andrei');
+
+    const lastNameTextbox = page.locator('input[name="last_name"]');
+    await expect(lastNameTextbox).toBeVisible()
+    await lastNameTextbox.click();
+    await lastNameTextbox.fill('Munteanu');
+
+    await page.waitForTimeout(3000)
+    const saveButton=page.getByRole('button', { name: 'Save' });
+    const cancelButton=page.getByRole('button', { name: 'Cancel' });
+    if (!(await saveButton.isVisible())) {
+        await cancelButton.isEnabled();
+        await cancelButton.click();
+    } else {
+        await saveButton.isEnabled();
+        await saveButton.click();
+    }
+}
+
 export async function editProfileRevert(page:Page, ctx:TestContext) {
     await acceptCookies(page);
+    await resetName(page, ctx);
     await page.goto('https://ioto-marketplace.semiotic.eu/');
 
     const profileBtn =  page.getByRole('button', { name: /Hello! \w+ \w+/ });
@@ -194,13 +233,68 @@ export async function editProfileRevert(page:Page, ctx:TestContext) {
 
 export async function removeEverythingFromCart(page:Page, ctx:TestContext){
 
+    await page.goto('https://ioto-marketplace.semiotic.eu/cart');
+    /*await page.waitForSelector('button:has-text("Remove")');*/
+    const itemsExist = page.getByText('Product Summary');
+    const itemsDontExist=page.getByRole('heading', { name: 'Your shopping bag is empty' })
+    await page.waitForLoadState('load')
+    await page.waitForLoadState('networkidle')
+        if (await itemsExist.isVisible()) {
+            console.log('Products exist in the cart.');
+            const removeButtons = await page.getByRole('button').filter({ hasText: 'Remove' }).all();
+            if (removeButtons.length === 0) {
+                console.log('Cart empty');
+            } else {
+                for (const button of removeButtons) {
+                    await button.waitFor({ state: 'visible' });
+
+                    if (await button.isVisible()) {
+                        await button.click();
+                    }
+                }
+            }
+        }
+
+        else if (await itemsDontExist.isVisible()) {
+            console.log('No products in the cart.');
+        }
+
+}
+
+export async function checkout(page:Page, ctx:TestContext){
+    await logIn(page,ctx);
+
+    await removeEverythingFromCart(page,ctx);
+
     await page.goto(`https://ioto-marketplace.semiotic.eu/cart`)
 
-    const removeButtons = await page.getByRole('button').filter({ hasText: 'Remove' }).all();
+    const btnAllProducts = page.getByRole('button', { name: 'open menu' });
+    await expect(btnAllProducts).toBeVisible();
+    await page.hover("//button[@aria-label='open menu' and @class='flex items-center justify-center py-2 px-4']");
 
-    for (const button of removeButtons) {
-        await button.click();
-    }
+    const btnElectronice =page.getByRole('button', { name: 'Electronice', exact: true });
+    await expect(btnElectronice).toBeVisible();
+    await btnElectronice.click();
+    const btnSeeAllProducts=page.getByRole('button', { name: 'See all products' }).nth(0);
+    await expect(btnSeeAllProducts).toBeVisible();
+    await btnSeeAllProducts.click();
+
+    const btnAddToCart1=page.getByRole('link', { name: '01Main02.jpg wishlist-icon' }).getByRole('button').nth(1);
+    await expect(btnAddToCart1).toBeVisible({ timeout: 10000 });
+    await btnAddToCart1.click();
+
+    const btnGoToCart=page.getByRole('button', { name: 'Go to Cart' });
+    await expect(btnGoToCart).toBeVisible();
+    await btnGoToCart.click();
+    await page.waitForLoadState('load')
+    await page.waitForLoadState('networkidle')
 
 
+    await expect(page.getByText('Product Summary')).toBeVisible();
+
+    const titleFirst = page.locator('//p[contains(@class, "line-clamp-1") and contains(@class, "w-9/12")]').nth(0);
+    await expect (page.locator('#counter-input').nth(0)).toHaveValue('1');
+
+    await expect (titleFirst).toBeVisible();
+    await expect(titleFirst).toContainText('Statie de andocare')
 }
