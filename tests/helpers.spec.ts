@@ -1,4 +1,5 @@
 import {expect, Page} from "@playwright/test";
+import {pindrioWishlistPage} from "../pages/pindrioWishlistPage";
 
 export type TestContext = {
     email: string;
@@ -102,4 +103,10 @@ export async function addOneItemToCart(page: Page, ctx: TestContext) {
     const titleFirst = page.locator('//p[contains(@class, "line-clamp-1") and contains(@class, "w-9/12")]').nth(0);
     await expect(titleFirst).toBeVisible();
     await expect(titleFirst).toContainText('Wireless Game Joystick Controller Left and Right Handle for Nintendo Switch Pro');
+}
+
+export async function goToWishlistPage(page:Page){
+    await page.locator('.small\\:flex.gap-1.p-2.text-sm.font-medium.hover\\:opacity-1\\/2').filter({hasText:'Wishlist'})
+        .click();
+    return new pindrioWishlistPage(page);
 }
