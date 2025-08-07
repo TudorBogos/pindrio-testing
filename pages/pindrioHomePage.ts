@@ -2,6 +2,8 @@ import { expect, type Locator, type Page } from "@playwright/test";
 import { acceptCookies, TestContext } from "../tests/helpers.spec";
 import { pindrioLoginPage } from "./pindrioLogin";
 
+//Class for the home page url: /
+
 export class pindrioHomePage {
   readonly page: Page;
   readonly logInSignUp: Locator;

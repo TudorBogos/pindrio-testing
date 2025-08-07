@@ -99,11 +99,13 @@ export class pindrioProfilePage {
     await this.lastNameTextBox.clear();
     await this.lastNameTextBox.fill("Munteanu");
 
-    await expect(this.firstNameTextBox).toHaveValue("Andrei");
-    await expect(this.lastNameTextBox).toHaveValue("Munteanu");
+    await this.page.reload({ waitUntil: "load" });
 
     await this.saveButton.waitFor({ state: "visible" });
     await this.saveButton.isEnabled();
     await this.saveButton.click();
+
+    await expect(this.firstNameTextBox).toHaveValue("Andrei");
+    await expect(this.lastNameTextBox).toHaveValue("Munteanu");
   }
 }
