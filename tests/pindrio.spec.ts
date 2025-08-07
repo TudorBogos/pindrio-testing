@@ -70,5 +70,12 @@ test ('Checkout', async ({ page }) => {
 
   const checkoutPage=await cartPage.performCheckout();
   await checkoutPage.fillInfo(ctx);
+  const paymentPage=await checkoutPage.proceedCheckout()
+
+  const orderConfirmed=await paymentPage.fillCardInfo(ctx);
+
+  await orderConfirmed.verifyItem('Wireless Game Joystick Controller Left and Right Handle for Nintendo Switch Pro', 1);
+
+
 
 })

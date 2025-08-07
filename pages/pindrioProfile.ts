@@ -87,6 +87,15 @@ export class pindrioProfilePage {
         await expect(this.firstNameTextBox).toHaveValue('TestName');
         await expect(this.lastNameTextBox).toHaveValue('TestLastName');
 
+
+        await this.goto();
+
+        await expect(this.profileLink).toBeVisible()
+        await  this.profileLink.click()
+
+        await expect(this.firstNameTextBox).toBeVisible();
+
+
         await this.lastNameTextBox.click();
         await this.lastNameTextBox.fill('Munteanu');
 
@@ -102,4 +111,5 @@ export class pindrioProfilePage {
         await expect(this.firstNameTextBox).toHaveValue('Andrei');
         await expect(this.lastNameTextBox).toHaveValue('Munteanu');
     }
+
 }

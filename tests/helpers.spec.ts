@@ -13,6 +13,10 @@ export type TestContext = {
     county:string;
     postalCode: string;
     shippingAddress: string;
+    cardNo: string;
+    cardCVC:string;
+    cardName:string;
+    cardDate:string;
 };
 
 let cachedTestCtx: TestContext | null = null;
@@ -32,6 +36,10 @@ export function testContext(): TestContext {
             phone: '0728563846',
             postalCode: '937022',
             shippingAddress: 'Strada Traian',
+            cardNo: '9900004810225098',
+            cardCVC:'111',
+            cardName:'Test Test',
+            cardDate:'12/31'
         };
     }
     return cachedTestCtx;
@@ -51,6 +59,10 @@ export const createTestContext = () => {
         phone: '0728563846',
         postalCode: '937022',
         shippingAddress: 'Strada Traian',
+        cardNo: '9900004810225098',
+        cardCVC:'111',
+        cardName:'Test Test',
+        cardDate:'12/31'
     };
 };
 
