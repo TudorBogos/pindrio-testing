@@ -16,9 +16,14 @@ export class pindrioWishlistPage {
 
     private async getWishlistCount(): Promise<number> {
         const wishlistCountSpan = this.page.locator('#wishlist-widget-button span').filter({ hasText: /\(\d+\)/ });
-        const wishlistCountText = await wishlistCountSpan.textContent();
-        const wishlistCountMatch = wishlistCountText?.match(/\d+/);
-        return wishlistCountMatch ? parseInt(wishlistCountMatch[0], 10) : 0;
+        if (await wishlistCountSpan.isVisible()){
+            const wishlistCountText = await wishlistCountSpan.textContent();
+            const wishlistCountMatch = wishlistCountText?.match(/\d+/);
+            return wishlistCountMatch ? parseInt(wishlistCountMatch[0], 10) : 0;
+        }
+        else{
+            return 0;
+        }
     }
 
     async goto(){
