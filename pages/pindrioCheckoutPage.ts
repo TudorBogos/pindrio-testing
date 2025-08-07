@@ -16,6 +16,7 @@ export class pindrioChechoutPage{
     readonly cityField: Locator;
     readonly saveButton: Locator;
     readonly checkboxSameAsBilling:Locator;
+    readonly continueButton: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -31,6 +32,7 @@ export class pindrioChechoutPage{
         this.countryField=page.locator('select[name="shipping_address.country_code"]')
         this.cityField=page.locator('#cities-select');
         this.saveButton=page.getByRole('button', { name: 'Save' })
+        this.continueButton=page.getByRole('button', { name: 'Continue' })
         this.checkboxSameAsBilling = page.getByRole('checkbox', { name: '✓ Same as Billing Address' });
 
     }
@@ -40,7 +42,6 @@ export class pindrioChechoutPage{
     }
 
     async fillInfo(ctx:TestContext){
-        this.goto()
         await this.page.waitForLoadState('load');
         await this.page.waitForLoadState('networkidle');
         await this.aliasField.click({ force: true });
@@ -72,7 +73,15 @@ export class pindrioChechoutPage{
             await this.checkboxSameAsBilling.check();
         }
         await this.saveButton.click();
+        await this.page.waitForLoadState('load');
+        await this.page.waitForLoadState('networkidle');
+        await this.continueButton.click();
 
 
+    }
+    async proceedCheckout(){
+        await this.page.waitForLoadState('load');
+        await this.page.waitForLoadState('networkidle');
+        await this.continueButton.click();
     }
 }

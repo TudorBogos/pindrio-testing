@@ -27,10 +27,6 @@ export class pindrioCart {
         await this.page.waitForLoadState('load');
         await this.page.waitForLoadState('networkidle');
 
-        await this.itemsExist.waitFor({ state: 'visible' }).catch(e => {
-
-        });
-
         if (await this.itemsExist.isVisible()) {
 
             const removeButtons = await this.page.getByRole('button').filter({ hasText: 'Remove' }).all();
@@ -56,8 +52,12 @@ export class pindrioCart {
         await this.page.waitForLoadState('networkidle');
 
         await this.checkoutButton.click();
-        await this.page.waitForLoadState('load');
-        await this.page.waitForLoadState('networkidle');
+        await this.checkoutButton.click();
+        await this.checkoutButton.click();
+        await this.checkoutButton.click();
+        await this.checkoutButton.click();
+
+        await expect(this.page.getByRole('heading', { name: 'Summary', exact: true }).locator('span').first()).toBeVisible();
         return new pindrioChechoutPage(this.page);
 
 

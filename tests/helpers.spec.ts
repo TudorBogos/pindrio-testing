@@ -74,7 +74,7 @@ export async function addOneItemToCart(page: Page, ctx: TestContext) {
     await expect(btnSeeAllProducts).toBeVisible();
     await btnSeeAllProducts.click();
 
-    const btnAddToCart = page.getByRole('link', { name: '01Main02.jpg wishlist-icon' }).getByRole('button').nth(1);
+    const btnAddToCart = page.getByRole('link', { name: 'NT0098_1 wishlist-icon 【' }).getByRole('button').nth(1)
     await expect(btnAddToCart).toBeVisible({ timeout: 10000 });
     await btnAddToCart.click();
 
@@ -89,5 +89,5 @@ export async function addOneItemToCart(page: Page, ctx: TestContext) {
 
     const titleFirst = page.locator('//p[contains(@class, "line-clamp-1") and contains(@class, "w-9/12")]').nth(0);
     await expect(titleFirst).toBeVisible();
-    await expect(titleFirst).toContainText('Statie de andocare');
+    await expect(titleFirst).toContainText('Wireless Game Joystick Controller Left and Right Handle for Nintendo Switch Pro');
 }
