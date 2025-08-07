@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { acceptCookies, TestContext } from "../tests/helpers.spec";
 
-export class pindrioChechoutPage {
+export class pindrioCheckoutPage {
   readonly page: Page;
   readonly aliasField: Locator;
   readonly nameField: Locator;

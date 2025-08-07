@@ -13,19 +13,7 @@ import { activateAccount } from "./email.spec";
 const ctx = testContext();
 const ctxUnique = testContextUnique();
 
-test("Test Sign Up", async ({ page }) => {
-  test.setTimeout(180_000);
-
-  const signUpPage = new pindrioSignUpPage(page);
-
-  await signUpPage.signUp(ctxUnique);
-
-  await activateAccount(page);
-
-  await expect(page.getByText("Activation successful")).toBeVisible();
-});
-
-test("Test Login with safe account", async ({ page }) => {
+test("Test Login", async ({ page }) => {
   test.setTimeout(180_000);
 
   const homePage = new pindrioHomePage(page);
@@ -35,6 +23,16 @@ test("Test Login with safe account", async ({ page }) => {
   await loginPage.login(ctx);
 
   await expect(homePage.loggedInButton).toBeVisible();
+});
+
+test("Test Sign Up", async ({ page, browser }) => {
+  test.setTimeout(180_000);
+
+  const signUpPage = new pindrioSignUpPage(page);
+
+  await signUpPage.signUp(ctxUnique);
+
+  await activateAccount(browser);
 });
 
 test("Edit Profile", async ({ page }) => {

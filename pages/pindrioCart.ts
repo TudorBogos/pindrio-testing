@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { acceptCookies, TestContext } from "../tests/helpers.spec";
 import { pindrioLoginPage } from "./pindrioLogin";
-import { pindrioChechoutPage } from "./pindrioCheckoutPage";
+import { pindrioCheckoutPage } from "./pindrioCheckoutPage";
 
 export class pindrioCart {
   readonly page: Page;
@@ -63,6 +63,6 @@ export class pindrioCart {
     await this.checkoutButton.click();
     await this.page.waitForLoadState("load");
     await this.page.waitForLoadState("networkidle");
-    return new pindrioChechoutPage(this.page);
+    return new pindrioCheckoutPage(this.page);
   }
 }

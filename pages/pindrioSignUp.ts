@@ -64,6 +64,7 @@ export class pindrioSignUpPage {
 
       await this.page.getByRole("checkbox").nth(1).click();
       await this.createAccountButton.click();
+      await this.page.waitForLoadState("load");
     } catch (error) {
       console.error("An error occurred during the sign-up process:", error);
       throw error;
