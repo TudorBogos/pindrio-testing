@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import {expect, type Locator, type Page, request} from '@playwright/test';
 import { acceptCookies, TestContext } from "../tests/helpers.spec";
 
 export class pindrioProfilePage {
@@ -44,11 +44,11 @@ export class pindrioProfilePage {
 
         await expect(this.firstNameTextBox).toBeVisible();
         await this.firstNameTextBox.click();
-        await this.firstNameTextBox.fill('Andrei');
+        await this.firstNameTextBox.fill(ctx.firstName);
 
         await expect(this.lastNameTextBox).toBeVisible();
         await this.lastNameTextBox.click();
-        await this.lastNameTextBox.fill('Munteanu');
+        await this.lastNameTextBox.fill(ctx.lastName);
 
         await this.page.waitForTimeout(3000);
 
@@ -80,9 +80,27 @@ export class pindrioProfilePage {
 
         await this.page.waitForTimeout(3000);
 
+
+        const _request = this.page.waitForResponse(
+            (res) =>
+                res.request().method() === "POST" &&
+                res.status() === 200 &&
+                res.url().includes("/proxy/api/v1/store/customers/me")
+        );
+
+
+
+
         await this.saveButton.waitFor({ state: 'visible' });
         await this.saveButton.isEnabled();
         await this.saveButton.click();
+
+        const response=_request;
+
+        if (response)
+
+
+
 
         await expect(this.firstNameTextBox).toHaveValue('TestName');
         await expect(this.lastNameTextBox).toHaveValue('TestLastName');
@@ -97,10 +115,10 @@ export class pindrioProfilePage {
 
 
         await this.lastNameTextBox.click();
-        await this.lastNameTextBox.fill('Munteanu');
+        await this.lastNameTextBox.fill(ctx.lastName);
 
         await this.firstNameTextBox.click();
-        await this.firstNameTextBox.fill('Andrei');
+        await this.firstNameTextBox.fill(ctx.firstName);
 
         await this.page.waitForTimeout(3000);
 
@@ -108,8 +126,8 @@ export class pindrioProfilePage {
         await this.saveButton.isEnabled();
         await this.saveButton.click();
 
-        await expect(this.firstNameTextBox).toHaveValue('Andrei');
-        await expect(this.lastNameTextBox).toHaveValue('Munteanu');
+        await expect(this.firstNameTextBox).toHaveValue(ctx.firstName);
+        await expect(this.lastNameTextBox).toHaveValue(ctx.lastName);
     }
 
 }

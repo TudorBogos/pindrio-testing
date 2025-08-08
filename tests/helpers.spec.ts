@@ -104,8 +104,4 @@ export async function addOneItemToCart(page: Page, ctx: TestContext) {
     await expect(titleFirst).toContainText('Wireless Game Joystick Controller Left and Right Handle for Nintendo Switch Pro');
 }
 
-export async function goToWishlistPage(page:Page){
-    await page.locator('.small\\:flex.gap-1.p-2.text-sm.font-medium.hover\\:opacity-1\\/2').filter({hasText:'Wishlist'})
-        .click();
-    return new pindrioWishlistPage(page);
-}
+

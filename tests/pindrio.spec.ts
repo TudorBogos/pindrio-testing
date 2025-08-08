@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import {
   createTestContext,
   testContext,
-  addOneItemToCart, goToWishlistPage,
+  addOneItemToCart,
 } from './helpers.spec'
 import {pindrioHomePage} from "../pages/pindrioHomePage";
 import {pindrioSignUpPage} from "../pages/pindrioSignUp";
