@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { acceptCookies, TestContext } from '../tests/helpers.spec';
 import { pindrioLoginPage } from "./pindrioLogin";
-import { pindrioChechoutPage } from "./pindrioCheckoutPage";
+import { pindrioCheckoutPage } from "./pindrioCheckoutPage";
 
 export class pindrioWishlistPage {
     readonly page: Page;

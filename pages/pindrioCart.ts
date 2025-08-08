@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { acceptCookies, TestContext } from '../tests/helpers.spec';
 import {pindrioLoginPage} from "./pindrioLogin";
-import {pindrioChechoutPage} from "./pindrioCheckoutPage";
+import {pindrioCheckoutPage} from "./pindrioCheckoutPage";
 
 export class pindrioCart {
     readonly page: Page;
@@ -56,7 +56,7 @@ export class pindrioCart {
         await this.checkoutButton.click();
 
         await expect(this.page.getByRole('heading', { name: 'Summary', exact: true }).locator('span').first()).toBeVisible();
-        return new pindrioChechoutPage(this.page);
+        return new pindrioCheckoutPage(this.page);
 
 
     }

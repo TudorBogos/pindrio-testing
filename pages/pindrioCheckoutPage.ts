@@ -2,7 +2,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 import { acceptCookies, TestContext } from '../tests/helpers.spec';
 import {pindrioNetopiaPaymentsPage} from "./pindrioNetopiaPaymentsPage";
 
-export class pindrioChechoutPage{
+export class pindrioCheckoutPage{
     readonly page: Page;
     readonly aliasField: Locator;
     readonly nameField: Locator;
