@@ -87,13 +87,46 @@ export async function addOneItemToCart(page: Page, ctx: TestContext) {
     await expect(btnSeeAllProducts).toBeVisible();
     await btnSeeAllProducts.click();
 
+
     const btnAddToCart = page.getByRole('link', { name: 'NT0098_1 wishlist-icon 【' }).getByRole('button').nth(1)
     await expect(btnAddToCart).toBeVisible({ timeout: 10000 });
     await btnAddToCart.click();
 
+/*    const _requestAddToCart = page.waitForResponse(
+        (res) =>
+            res.request().method() === "GET" &&
+            res.status() === 304 &&
+            res.url().includes("/proxy/api/v1/store/products/prod_01J8S8J0QJ82FMKFKZ35MXV4W1?cart_id=cart_01K24FPMG43M4TFDH21E7816RE&currency_code=ron&region_id=reg_01HMF3ME1JCP67G8QRK9CNP0PP")
+    );*/
+
+
+
     const btnGoToCart = page.getByRole('button', { name: 'Go to Cart' });
     await expect(btnGoToCart).toBeVisible();
     await btnGoToCart.click();
+
+
+
+/*    const responseAddToCart = await _requestAddToCart;
+
+
+    if (!responseAddToCart.ok()) {
+        console.error("API Failed when editing profile:", responseAddToCart.status());
+    } else {
+        const responseData: { product: { title: string } } = await responseAddToCart.json();
+
+        if (responseData.product.title === "【Haweel】 Wireless Game Joystick Controller Left and Right Handle for Nintendo Switch Pro" ) {
+            console.log("The response data contains the correct item.");
+        } else {
+            console.error("The response data does not contain the correct item.");
+        }
+    }*/
+
+
+
+
+
+
 
     await page.waitForLoadState('load');
     await expect(page.getByText('Product Summary')).toBeVisible();
