@@ -8,7 +8,7 @@ import { pindrioHomePage } from "../pages/pindrioHomePage";
 import { pindrioSignUpPage } from "../pages/pindrioSignUp";
 import { pindrioProfilePage } from "../pages/pindrioProfile";
 import { pindrioCart } from "../pages/pindrioCart";
-import { activateAccount } from "./email.spec";
+import { activateAccount } from "./email.spec.ts";
 
 const ctx = testContext();
 const ctxUnique = testContextUnique();

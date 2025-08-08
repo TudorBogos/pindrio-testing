@@ -38,6 +38,9 @@ export default defineConfig({
     baseURL: "https://ioto-marketplace.semiotic.eu/",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+    extraHTTPHeaders: {
+      Accept: "application/json, text/plain, */*",
+    },
   },
 
   /* Configure projects for major browsers */

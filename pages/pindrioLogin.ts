@@ -1,6 +1,17 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { acceptCookies, TestContext } from "../tests/helpers.spec";
 
+/*
+const _request = page.waitForResponse(
+  (res) =>
+    res.request().method() === "GET" &&
+    res.status() === 200 &&
+    res.url().includes("parte din URL ")
+);
+
+  await reservations_page_request;
+  */
+
 export class pindrioLoginPage {
   readonly page: Page;
   readonly passwordTextBox: Locator;
@@ -37,10 +48,24 @@ export class pindrioLoginPage {
       await this.passwordTextBox.click();
       await this.passwordTextBox.fill(ctx.password);
 
+      const _requestLogin = this.page.waitForResponse(
+        (res) =>
+          res.request().method() === "GET" &&
+          res.status() === 200 &&
+          res.url().includes("/me")
+      );
+
       await this.logInButton.click();
 
+      const response = await _requestLogin;
+      if (!response.ok()) {
+        console.error("Login failed:", response.status());
+      } else {
+        const responseData = await response.json();
+        console.log(responseData);
+      }
+
       await this.page.waitForLoadState("load");
-      await this.page.waitForLoadState("networkidle");
     } catch (error) {
       console.error("An error occurred during the login process:", error);
       throw error;

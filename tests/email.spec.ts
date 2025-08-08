@@ -52,16 +52,12 @@ export async function activateAccount(browser: Browser) {
       console.log("Dots element is not visible or does not exist.");
     }
 
-    await expect(verifica).toBeVisible();
-    await verifica.click();
-
-    await page.waitForLoadState("load");
-
     const [newPage] = await Promise.all([
       context.waitForEvent("page"),
       await verifica.click(),
     ]);
 
+    await page.waitForLoadState("load");
     const activPage = new pindrioActivationAccPage(newPage);
 
     await expect(activPage.activSucc).toBeVisible();

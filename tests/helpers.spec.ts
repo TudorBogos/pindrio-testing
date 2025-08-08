@@ -19,15 +19,15 @@ export function testContext(): TestContext {
   let cachedTestCtx: TestContext | null = null;
   if (!cachedTestCtx) {
     cachedTestCtx = {
-      alias: "AndreiM",
+      alias: "Tester",
       apartmentSuite: "12",
       city: "Galati",
       country: "Romania",
       county: "Galati",
-      email: `andreimunteanu7@yahoo.com`,
-      firstName: `Andrei`,
-      lastName: `Munteanu`,
-      password: `%Test123`,
+      email: `tudorandreimunca@gmail.com`,
+      firstName: `Test`,
+      lastName: `Test`,
+      password: `Test,test1234`,
       phone: "0728563846",
       postalCode: "937022",
       shippingAddress: "Strada Traian",
@@ -52,14 +52,14 @@ export function testContextUnique(): TestContext {
 
   if (!cachedTestCtx) {
     cachedTestCtx = {
-      alias: "Tudor Andrei",
+      alias: "Tester",
       apartmentSuite: "16",
       city: "Galati",
       country: "Romania",
       county: "Galati",
       email: `tudorandreimunca+${uniqueID}@gmail.com`,
-      firstName: `Andrei`,
-      lastName: `Tudor`,
+      firstName: `Test`,
+      lastName: `Test`,
       password: `%Test123`,
       phone: "0747222222",
       postalCode: "937022",

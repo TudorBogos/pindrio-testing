@@ -63,7 +63,24 @@ export class pindrioSignUpPage {
       await this.confirmPasswordTextBox.fill(ctxUnique.password);
 
       await this.page.getByRole("checkbox").nth(1).click();
+
+      const _requestLogin = this.page.waitForResponse(
+        (res) =>
+          res.request().method() === "POST" &&
+          res.status() === 200 &&
+          res.url().includes("/proxy/api/v1/store/customers")
+      );
+
       await this.createAccountButton.click();
+
+      const response = await _requestLogin;
+      if (!response.ok()) {
+        console.error("Signup failed:", response.status());
+      } else {
+        const responseData = await response.json();
+        console.log(responseData);
+      }
+
       await this.page.waitForLoadState("load");
     } catch (error) {
       console.error("An error occurred during the sign-up process:", error);
