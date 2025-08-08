@@ -8,7 +8,9 @@ import { pindrioHomePage } from "../pages/pindrioHomePage";
 import { pindrioSignUpPage } from "../pages/pindrioSignUp";
 import { pindrioProfilePage } from "../pages/pindrioProfile";
 import { pindrioCart } from "../pages/pindrioCart";
-import { activateAccount } from "./email.spec.ts";
+import { activateAccount } from "./email.spec";
+import {pindrioWishlistPage} from "../pages/pindrioWishlistPage";
+import {pindrioProductsListPage} from "../pages/pindrioProductsListPage";
 
 const ctx = testContext();
 const ctxUnique = testContextUnique();
@@ -22,17 +24,20 @@ const ctxUnique = testContextUnique();
 // And presses the login button
 // Then:
 // They are successfully logged in, by seeing their name instead of the default login button
-test("Test Login", async ({ page }) => {
-  test.setTimeout(180_000);
 
-  const homePage = new pindrioHomePage(page);
+    test.describe("User Flows", async () => {
 
-  const loginPage = await homePage.goToLogIn();
+        test('Test Login', async ({page}) => {
+            test.setTimeout(180_000);
 
-  await loginPage.login(ctx);
+            const homePage = new pindrioHomePage(page);
 
-  await expect(homePage.loggedInButton).toBeVisible();
-});
+            const loginPage = await homePage.goToLogIn();
+
+            await loginPage.login(ctx);
+
+            await expect(homePage.loggedInButton).toBeVisible();
+        });
 
 // Scenario: The user doesn't have an account and wants to sign up on the home page
 // Given:
@@ -47,15 +52,15 @@ test("Test Login", async ({ page }) => {
 // And presses the verify button which opens a new tab
 // Then:
 // The user is on a newly opened tab which says activation successful
-test("Test Sign Up", async ({ page, browser }) => {
-  test.setTimeout(180_000);
+        test("Test Sign Up", async ({page, browser}) => {
+            test.setTimeout(180_000);
 
-  const signUpPage = new pindrioSignUpPage(page);
+            const signUpPage = new pindrioSignUpPage(page);
 
-  await signUpPage.signUp(ctxUnique);
+            await signUpPage.signUp(ctxUnique);
 
-  await activateAccount(browser);
-});
+            await activateAccount(browser);
+        });
 
 // Scenario: The user wants to update their profile
 // Given:
@@ -72,33 +77,99 @@ test("Test Sign Up", async ({ page, browser }) => {
 // And reloads the page
 // Then:
 // The values the changed are saved and displayed correctly.
-test("Edit Profile", async ({ page }) => {
-  test.setTimeout(180_000);
+        test("Edit Profile", async ({page}) => {
+            test.setTimeout(180_000);
 
-  const homePage = new pindrioHomePage(page);
-  const loginPage = await homePage.goToLogIn();
+            const homePage = new pindrioHomePage(page);
+            const loginPage = await homePage.goToLogIn();
 
-  await loginPage.login(ctx);
+            await loginPage.login(ctx);
 
-  const profilePage = new pindrioProfilePage(page);
+            const profilePage = new pindrioProfilePage(loginPage.page);
 
-  await profilePage.editProfileRevert(ctx);
-});
+            await profilePage.editProfileRevert(ctx);
+        });
 
-test("Checkout", async ({ page }) => {
-  test.setTimeout(180_000);
+        test("Checkout", async ({page}) => {
+            test.setTimeout(180_000);
 
-  const homePage = new pindrioHomePage(page);
-  const loginPage = await homePage.goToLogIn();
+            const homePage = new pindrioHomePage(page);
+            const loginPage = await homePage.goToLogIn();
 
-  await loginPage.login(ctx);
+            await loginPage.login(ctx);
 
-  const cartPage = new pindrioCart(page);
+            const cartPage = new pindrioCart(loginPage.page);
 
-  await cartPage.removeEverythingFromCart();
+            await cartPage.removeEverythingFromCart();
 
-  await addOneItemToCart(page, ctx);
+            await addOneItemToCart(page, ctx);
 
-  const checkoutPage = await cartPage.performCheckout();
-  await checkoutPage.fillInfo(ctx);
-});
+            const checkoutPage = await cartPage.performCheckout();
+            await checkoutPage.fillInfo(ctx);
+            const paymentPage = await checkoutPage.proceedCheckout()
+
+            const orderConfirmed = await paymentPage.fillCardInfo(ctx);
+
+            await orderConfirmed.verifyItem('Wireless Game Joystick Controller Left and Right Handle for Nintendo Switch Pro', 1);
+
+
+        })
+
+        test('Add to wishlist', async ({page}) => {
+            test.setTimeout(180000);
+            const homePage = new pindrioHomePage(page);
+            const loginPage = await homePage.goToLogIn();
+            await loginPage.login(ctx);
+            await loginPage.page.waitForLoadState('load');
+
+            const wishlistPage = new pindrioWishlistPage(page);
+            await wishlistPage.removeEverythingFromWishlist();
+
+            const btnAllProducts = wishlistPage.page.getByRole('button', {name: 'open menu'});
+            await expect(btnAllProducts).toBeVisible();
+            await wishlistPage.page.hover("//button[@aria-label='open menu' and @class='flex items-center justify-center py-2 px-4']");
+
+            const btnElectronice = wishlistPage.page.getByRole('button', {name: 'Electronice', exact: true});
+            await expect(btnElectronice).toBeVisible();
+            await btnElectronice.click();
+
+            const btnSeeAllProducts = wishlistPage.page.getByRole('button', {name: 'See all products'}).first();
+            await expect(btnSeeAllProducts).toBeVisible();
+            await btnSeeAllProducts.click({force: true});
+
+            const productsList = new pindrioProductsListPage(wishlistPage.page);
+            await productsList.page.waitForLoadState('load');
+
+            const indexToCheck = 13;
+            await productsList.wishlistIcons.nth(indexToCheck).click();
+            await productsList.page.waitForTimeout(3000);
+            const nameToCheck = await productsList.itemsNames.nth(indexToCheck).textContent();
+
+            await productsList.page.locator('.small\\:flex.gap-1.p-2.text-sm.font-medium.hover\\:opacity-1\\/2').filter({hasText: 'Wishlist'}).click();
+            await productsList.page.waitForLoadState('load');
+
+            await productsList.page.getByRole('button', {name: 'View Wish List'}).click();
+            await productsList.page.waitForLoadState('load');
+            await productsList.page.waitForLoadState('networkidle');
+            await productsList.page.waitForTimeout(5000);
+
+            const wishlistPage2 = new pindrioWishlistPage(productsList.page);
+            await wishlistPage2.page.waitForLoadState('load');
+
+            const noOfItemsInWishlist = await wishlistPage2.noOfItemsInWishlist;
+            console.log(noOfItemsInWishlist);
+            expect(noOfItemsInWishlist).toStrictEqual(1);
+
+            const wishlistItems = await wishlistPage2.itemsList;
+            console.log('Wishlist items', wishlistItems);
+            const firstWishlistItemName = await wishlistItems[0].textContent();
+
+            expect(nameToCheck).toBe(firstWishlistItemName);
+
+            await wishlistPage2.page.waitForLoadState('load');
+            await wishlistPage2.removeEverythingFromWishlist();
+
+
+        });
+    });
+

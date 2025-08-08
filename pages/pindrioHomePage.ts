@@ -52,12 +52,14 @@ export class pindrioHomePage {
     ).toBeVisible();
   }
 
-  async goToLogIn() {
-    await this.goto();
-    await acceptCookies(this.page);
-    await this.logInSignUp.hover();
-    await this.logIn.click();
-    await this.page.waitForLoadState("load");
-    return new pindrioLoginPage(this.page);
-  }
+    async goToLogIn(){
+        await this.goto()
+        await acceptCookies(this.page);
+        await this.logInSignUp.click();
+        await this.logIn.click();
+        await (this.page.waitForLoadState('load'))
+
+        await (this.page.waitForLoadState('networkidle'))
+        return new pindrioLoginPage(this.page)
+    }
 }
