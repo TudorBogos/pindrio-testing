@@ -4,31 +4,41 @@ import {pindrioLoginPage} from "./pindrioLogin";
 import {pindrioCheckoutPage} from "./pindrioCheckoutPage";
 
 export class pindrioCart {
-    readonly page: Page;
-    readonly itemsExist: Locator;
-    readonly itemsDontExist: Locator;
-    readonly removeButtons: Promise<Locator[]>;
-    readonly checkoutButton: Locator;
+  readonly page: Page;
+  readonly itemsExist: Locator;
+  readonly itemsDontExist: Locator;
+  readonly removeButtons: Promise<Locator[]>;
+  readonly checkoutButton: Locator;
 
-    constructor(page: Page) {
-        this.page = page;
-        this.itemsExist = page.getByText('Product Summary');
-        this.itemsDontExist = page.getByRole('heading', { name: 'Your shopping bag is empty' });
-        this.removeButtons = page.getByRole('button').filter({ hasText: 'Remove' }).all();
-        this.checkoutButton=page.getByRole('button', { name: 'Go to checkout' });
-    }
+  constructor(page: Page) {
+    this.page = page;
+    this.itemsExist = page.getByText("Product Summary");
+    this.itemsDontExist = page.getByRole("heading", {
+      name: "Your shopping bag is empty",
+    });
+    this.removeButtons = page
+      .getByRole("button")
+      .filter({ hasText: "Remove" })
+      .all();
+    this.checkoutButton = page.getByRole("button", { name: "Go to checkout" });
+  }
 
-    async goto() {
-        await this.page.goto('https://ioto-marketplace.semiotic.eu/cart');
-    }
+  async goto() {
+    await this.page.goto("https://ioto-marketplace.semiotic.eu/cart");
+  }
 
-    async removeEverythingFromCart() {
-        await this.goto();
-        await this.page.waitForLoadState('load');
+  async removeEverythingFromCart() {
+    await this.goto();
+    await this.page.waitForLoadState("load");
+    await this.page.waitForLoadState("networkidle");
 
-        if (await this.itemsExist.isVisible()) {
+    await this.itemsExist.waitFor({ state: "visible" }).catch((e) => {});
 
-            const removeButtons = await this.page.getByRole('button').filter({ hasText: 'Remove' }).all();
+    if (await this.itemsExist.isVisible()) {
+      const removeButtons = await this.page
+        .getByRole("button")
+        .filter({ hasText: "Remove" })
+        .all();
 
             if (removeButtons.length === 0) {
             } else {
@@ -54,7 +64,8 @@ export class pindrioCart {
         await this.checkoutButton.click();
         await this.checkoutButton.click();
         await this.checkoutButton.click();
-
+        await this.page.waitForLoadState("load");
+        await this.page.waitForLoadState("networkidle");
         await expect(this.page.getByRole('heading', { name: 'Summary', exact: true }).locator('span').first()).toBeVisible();
         return new pindrioCheckoutPage(this.page);
 

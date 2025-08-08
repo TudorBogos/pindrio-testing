@@ -44,9 +44,9 @@ export class pindrioCheckoutPage{
 
     }
 
-    async goto() {
-        await this.page.goto('https://ioto-marketplace.semiotic.eu/checkout');
-    }
+  async goto() {
+    await this.page.goto("https://ioto-marketplace.semiotic.eu/checkout");
+  }
 
     async fillInfo(ctx:TestContext){
         await this.page.waitForLoadState('load');;
