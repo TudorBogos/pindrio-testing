@@ -23,8 +23,6 @@ export class pindrioNetopiaPaymentsPage{
     }
     async fillCardInfo(ctx:TestContext){
         await this.page.waitForLoadState('load');
-        await this.page.waitForLoadState('networkidle');
-        await this.page.waitForLoadState('domcontentloaded');
 
         await this.cardNameField.click({ force: true });
         await this.cardNameField.fill(ctx.cardName);
@@ -41,15 +39,11 @@ export class pindrioNetopiaPaymentsPage{
         await this.payButton.click();
 
         await this.page.waitForLoadState('load');
-        await this.page.waitForLoadState('networkidle');
-        await this.page.waitForLoadState('domcontentloaded');
 
         return new pindrioOrderConfirmedPage(this.page);
 
 /*        await expect(this.page.getByText('Order Confirmed')).toBeVisible({timeout: 20000});
         await this.page.waitForLoadState('load');
-        await this.page.waitForLoadState('networkidle');
-        await this.page.waitForLoadState('domcontentloaded');
 
         const quantityLocators = this.page.locator('text=/Quantity: \\d+/');
 

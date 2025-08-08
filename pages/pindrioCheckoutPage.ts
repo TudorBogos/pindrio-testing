@@ -49,8 +49,7 @@ export class pindrioChechoutPage{
     }
 
     async fillInfo(ctx:TestContext){
-        await this.page.waitForLoadState('load');
-        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForLoadState('load');;
 
         if (await this.nameField.isVisible()){
             await this.nameField.click({ force: true });
@@ -119,27 +118,25 @@ export class pindrioChechoutPage{
             await this.saveButton.click();
         }
         await this.page.waitForLoadState('load');
-        await this.page.waitForLoadState('networkidle');
 
 
         await this.continueButton.click();
 
-        await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForLoadState('load');
 
 
 
     }
     async proceedCheckout(){
-        await this.page.waitForLoadState('networkidle');
-        await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForLoadState('load');
         await this.savedCardSelector.isVisible();
         await this.savedCardSelector.click();
 
-        await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForLoadState('load');
         await this.checkoutButton.isVisible();
         await this.checkoutButton.click();
 
-        await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForLoadState('load');
 
         if (await this.page.getByRole('button', {name: 'Send anyway'}).isVisible()){
             await this.page.getByRole('button', { name: 'Send anyway' }).click();

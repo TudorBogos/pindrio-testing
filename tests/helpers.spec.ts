@@ -96,7 +96,6 @@ export async function addOneItemToCart(page: Page, ctx: TestContext) {
     await btnGoToCart.click();
 
     await page.waitForLoadState('load');
-    await page.waitForLoadState('networkidle');
     await expect(page.getByText('Product Summary')).toBeVisible();
     await expect(page.locator('#counter-input').nth(0)).toHaveValue('1');
 

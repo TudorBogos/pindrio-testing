@@ -20,8 +20,6 @@ export class pindrioOrderConfirmedPage {
     async verifyItem(name: string, quant: number){
         await expect(this.header).toBeVisible({timeout: 20000});
         await this.page.waitForLoadState('load');
-        await this.page.waitForLoadState('networkidle');
-        await this.page.waitForLoadState('domcontentloaded');
 
 
         const count = await this.quantityLocators.count();

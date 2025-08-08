@@ -38,7 +38,6 @@ export class pindrioLoginPage {
             await this.logInButton.click();
 
             await this.page.waitForLoadState('load')
-            await this.page.waitForLoadState("networkidle")
 
         } catch (error) {
             console.error('An error occurred during the login process:', error);

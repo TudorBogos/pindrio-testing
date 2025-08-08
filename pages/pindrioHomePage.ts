@@ -43,7 +43,7 @@ export class pindrioHomePage {
         await acceptCookies(this.page);
         await this.logInSignUp.click();
         await this.logIn.click();
-        await (this.page.waitForLoadState('networkidle'))
+        await (this.page.waitForLoadState('load'))
         return new pindrioLoginPage(this.page)
     }
 }

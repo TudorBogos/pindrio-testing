@@ -25,7 +25,6 @@ export class pindrioCart {
     async removeEverythingFromCart() {
         await this.goto();
         await this.page.waitForLoadState('load');
-        await this.page.waitForLoadState('networkidle');
 
         if (await this.itemsExist.isVisible()) {
 
@@ -49,7 +48,6 @@ export class pindrioCart {
     async performCheckout(){
         await this.goto();
         await this.page.waitForLoadState('load');
-        await this.page.waitForLoadState('networkidle');
 
         await this.checkoutButton.click();
         await this.checkoutButton.click();
