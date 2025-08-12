@@ -27,20 +27,32 @@ export class pindrioCart {
     await this.page.goto("https://ioto-marketplace.semiotic.eu/cart");
   }
 
-  async removeEverythingFromCart() {
-    await this.goto();
-    await this.page.waitForLoadState("load");
-    await this.page.waitForLoadState("networkidle");
+    async removeEverythingFromCart() {
+        await this.goto();
+        await this.page.waitForLoadState("load");
+        await this.page.waitForLoadState("networkidle");
 
-    await this.itemsExist.waitFor({ state: "visible" }).catch((e) => {});
+        // Function to check if itemsExist is visible
+        const itemsVisible = async () => {
+            try {
+                await this.itemsExist.waitFor({ state: "visible", timeout: 10000 });
+                return true;
+            } catch (e) {
+                return false; // Return false if items are not visible within 10 seconds
+            }
+        };
 
-    if (await this.itemsExist.isVisible()) {
-      const removeButtons = await this.page
-        .getByRole("button")
-        .filter({ hasText: "Remove" })
-        .all();
+        // Check for items visibility without throwing an error if they don't exist
+        const itemsExist = await itemsVisible();
+
+        if (itemsExist) {
+            const removeButtons = await this.page
+                .getByRole("button")
+                .filter({ hasText: "Remove" })
+                .all();
 
             if (removeButtons.length === 0) {
+                // No remove buttons found
             } else {
                 for (const button of removeButtons) {
                     await button.waitFor({ state: 'visible' });
@@ -48,13 +60,16 @@ export class pindrioCart {
                         await button.click();
                         await this.page.waitForTimeout(1000);
                     } catch (error) {
-                        console.error( error);
+                        console.error(error);
                     }
                 }
             }
-        } else if (await this.itemsDontExist.isVisible()) {
+        } else {
+            // Handle case where items don't exist (no action needed)
         }
     }
+
+
     async performCheckout(){
         await this.goto();
         await this.page.waitForLoadState('load');
@@ -71,5 +86,4 @@ export class pindrioCart {
 
 
     }
-
 }

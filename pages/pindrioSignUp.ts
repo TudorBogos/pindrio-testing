@@ -75,10 +75,10 @@ export class pindrioSignUpPage {
 
       await this.createAccountButton.click();
 
-      const response = await _requestLogin;
+/*      const response = await _requestLogin;
       if (!response.ok()) {
         console.error("Signup failed:", response.status());
-      }
+      }*/
 
       await this.page.waitForLoadState("load");
       await expect(this.failedAttempts).toHaveCount(0);

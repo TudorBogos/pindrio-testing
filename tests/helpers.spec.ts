@@ -1,5 +1,4 @@
-import {pindrioWishlistPage} from "../pages/pindrioWishlistPage";
-import { expect, Page } from "@playwright/test";
+import {expect, Page} from "@playwright/test";
 
 export type TestContext = {
     email: string;
@@ -20,11 +19,10 @@ export type TestContext = {
     cardDate:string;
 };
 
-let cachedTestCtx: TestContext | null = null;
+
 
 export function testContext(): TestContext {
-    if (!cachedTestCtx) {
-        cachedTestCtx = {
+    return{
             alias: 'AndreiM',
             apartmentSuite: '12',
             city: 'Galati',
@@ -42,44 +40,38 @@ export function testContext(): TestContext {
             cardName:'Test Test',
             cardDate:'12/31'
         };
-    }
-    return cachedTestCtx;
+
 }
 
 //Functie pentru creare date de logare unice cu un id unic format din yymmddhhmm
 export function testContextUnique(): TestContext {
-  const now = new Date();
+    const now = new Date();
+    const year = String(now.getFullYear()).slice(-2);
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+    const uniqueID = `${year}${month}${day}${hours}${minutes}${seconds}`;
 
-  const year = String(now.getFullYear()).slice(-2);
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  const seconds = String(now.getSeconds()).padStart(2, "0");
-
-  const uniqueID = `${year}${month}${day}${hours}${minutes}${seconds}`;
-
-  if (!cachedTestCtx) {
-    cachedTestCtx = {
-      alias: "Tester",
-      apartmentSuite: "16",
-      city: "Galati",
-      country: "Romania",
-      county: "Galati",
-      email: `tudorandreimunca+${uniqueID}@gmail.com`,
-      firstName: `Test`,
-      lastName: `Test`,
-      password: `%Test123`,
-      phone: "0747222222",
-      postalCode: "937022",
-      shippingAddress: "Bld. Henri Coanda 5",
+    return {
+        alias: "Tester",
+        apartmentSuite: "16",
+        city: "Galati",
+        country: "Romania",
+        county: "Galati",
+        email: `tudorandreimunca+${uniqueID}@gmail.com`,
+        firstName: `Test`,
+        lastName: `Test`,
+        password: `%Test123`,
+        phone: "0747222222",
+        postalCode: "937022",
+        shippingAddress: "Bld. Henri Coanda 5",
         cardNo: '9900004810225098',
-        cardCVC:'111',
-        cardName:'Test Test',
-        cardDate:'12/31'
+        cardCVC: '111',
+        cardName: 'Test Test',
+        cardDate: '12/31'
     };
-  }
-  return cachedTestCtx;
 }
 
 export const createTestContext = () => {
@@ -146,6 +138,9 @@ export async function addOneItemToCart(page: Page, ctx: TestContext) {
 
     const btnGoToCart = page.getByRole('button', { name: 'Go to Cart' });
     await expect(btnGoToCart).toBeVisible();
+    await btnGoToCart.click();
+    await btnGoToCart.click();
+    await btnGoToCart.click();
     await btnGoToCart.click();
 
 

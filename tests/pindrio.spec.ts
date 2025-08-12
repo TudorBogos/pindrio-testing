@@ -39,7 +39,8 @@ const ctxUnique = testContextUnique();
             await expect(homePage.loggedInButton).toBeVisible();
         });
 
-// Scenario: The user doesn't have an account and wants to sign up on the home page
+
+        // Scenario: The user doesn't have an account and wants to sign up on the home page
 // Given:
 // The user is on the home page and wants so sign up.
 // When:
@@ -56,6 +57,7 @@ const ctxUnique = testContextUnique();
             test.setTimeout(180_000);
 
             const signUpPage = new pindrioSignUpPage(page);
+
 
             await signUpPage.signUp(ctxUnique);
 

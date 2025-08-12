@@ -134,12 +134,12 @@ export class pindrioProfilePage {
     await this.lastNameTextBox.click();
     await this.lastNameTextBox.clear();
     await this.lastNameTextBox.fill("Munteanu");
-
+      await this.saveButton.waitFor({ state: "visible" });
+      await this.saveButton.isEnabled();
+      await this.saveButton.click();
     await this.page.reload({ waitUntil: "load" });
 
-    await this.saveButton.waitFor({ state: "visible" });
-    await this.saveButton.isEnabled();
-    await this.saveButton.click();
+
 
         await expect(this.firstNameTextBox).toHaveValue(ctx.firstName);
         await expect(this.lastNameTextBox).toHaveValue(ctx.lastName);
