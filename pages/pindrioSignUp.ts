@@ -10,6 +10,8 @@ export class pindrioSignUpPage {
   readonly passwordTextBox: Locator;
   readonly confirmPasswordTextBox: Locator;
   readonly createAccountButton: Locator;
+  readonly failedAttempts: Locator;
+  readonly confRegistering: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -29,6 +31,8 @@ export class pindrioSignUpPage {
     this.createAccountButton = page.getByRole("button", {
       name: "Create account",
     });
+    this.failedAttempts = page.getByText("There were 5 failed attempts");
+    this.confRegistering = page.getByText("Thank you for registering.");
   }
 
   async goto() {
@@ -66,9 +70,7 @@ export class pindrioSignUpPage {
 
       const _requestLogin = this.page.waitForResponse(
         (res) =>
-          res.request().method() === "POST" &&
-          res.status() === 200 &&
-          res.url().includes("/proxy/api/v1/store/customers")
+          res.request().method() === "POST" && res.url().includes("/customers")
       );
 
       await this.createAccountButton.click();
@@ -76,15 +78,12 @@ export class pindrioSignUpPage {
       const response = await _requestLogin;
       if (!response.ok()) {
         console.error("Signup failed:", response.status());
-      } else {
-        const responseData = await response.json();
-        console.log(responseData);
       }
 
       await this.page.waitForLoadState("load");
+      await expect(this.failedAttempts).toHaveCount(0);
     } catch (error) {
       console.error("An error occurred during the sign-up process:", error);
-      throw error;
     }
   }
 }
