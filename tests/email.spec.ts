@@ -19,8 +19,9 @@ export async function activateAccount(browser: Browser) {
     const email_row = page.getByRole("row", {
       name: /unread,\s+contact(\s+\d*)*,\s+Activare/,
     });
-    const activationSuccessful = page.getByText("Activation successful");
-    const dots = page.getByRole("button", { name: "Show trimmed content" });
+    const dots = page
+      .getByRole("button", { name: "Show trimmed content" })
+      .last();
     const verifica = page.getByRole("link", { name: "Verifică" });
 
     await page.goto("https://mail.google.com/mail");
@@ -44,6 +45,8 @@ export async function activateAccount(browser: Browser) {
     await expect(email_row).toBeVisible();
     await email_row.click();
 
+    await page.waitForLoadState("load");
+
     //Dots are visible if there's an ongoing conversation in GMAIL
     try {
       await expect(dots).toBeVisible();
@@ -57,7 +60,7 @@ export async function activateAccount(browser: Browser) {
       await verifica.click(),
     ]);
 
-    await page.waitForLoadState("load");
+    await page.waitForLoadState("domcontentloaded");
     const activPage = new pindrioActivationAccPage(newPage);
 
     await expect(activPage.activSucc).toBeVisible();
