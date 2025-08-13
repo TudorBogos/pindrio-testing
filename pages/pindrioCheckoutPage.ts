@@ -118,6 +118,7 @@ export class pindrioCheckoutPage{
             await this.saveButton.click();
         }
         await this.page.waitForLoadState('load');
+        await this.page.waitForTimeout(5000);
 
 
         await this.continueButton.click();
