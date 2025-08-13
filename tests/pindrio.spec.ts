@@ -148,12 +148,59 @@ test.describe("User Flows", async () => {
     const productsList = new pindrioProductsListPage(wishlistPage.page);
     await productsList.page.waitForLoadState("load");
 
+
+
+
     const indexToCheck = 13;
+
+
+    const _requestWishlist = productsList.page.waitForResponse(
+        (res) =>
+            res.request().method() === "POST" &&
+            res.status() === 200 &&
+            res.url().includes("/wish-item")
+    );
+
+
+
     await productsList.wishlistIcons.nth(indexToCheck).click();
     await productsList.page.waitForTimeout(3000);
     const nameToCheck = await productsList.itemsNames
       .nth(indexToCheck)
       .textContent();
+
+
+    const responseEditWishlist = await _requestWishlist;
+
+
+    if (!responseEditWishlist.ok()) {
+      console.error("API Failed when adding to wishlist:", responseEditWishlist.status());
+    } else {
+      const responseData: {
+        items: { variant: { title: string} };
+      } = await responseEditWishlist.json();
+
+      if (
+          responseData.items[0].variant.title.trim() === nameToCheck.trim()
+      ) {
+        console.log("The response data contains the specified value.");
+      } else {
+        console.error(
+            "The response data does not contain the specified value."
+        );
+      }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
 
     await productsList.page
       .locator(

@@ -27,12 +27,11 @@ export class pindrioProductsListPage {
 
     async assertVisibilityAndLogCounts() {
         try {
-            // Wait for elements to be visible
+
             await expect(this.wishlistIcons.first()).toBeVisible({ timeout: 10000 });
             await expect(this.itemsNames.first()).toBeVisible({ timeout: 10000 });
             await expect(this.addToCartButtons.first()).toBeVisible({ timeout: 10000 });
 
-            // Log counts
             const wishlistCount = await this.wishlistIcons.count();
             const itemsNamesCount = await this.itemsNames.count();
             const addToCartCount = await this.addToCartButtons.count();
