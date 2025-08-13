@@ -1,16 +1,16 @@
-import { test, expect, Browser } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import {
   testContext,
   addOneItemToCart,
   testContextUnique,
 } from "./helpers.spec";
-import { activateAccount } from "./email.spec";
 import { pindrioHomePage } from "../pages/pindrioHomePage";
 import { pindrioSignUpPage } from "../pages/pindrioSignUp";
 import { pindrioProfilePage } from "../pages/pindrioProfile";
 import { pindrioCart } from "../pages/pindrioCart";
-import { pindrioWishlistPage } from "../pages/pindrioWishlistPage";
-import { pindrioProductsListPage } from "../pages/pindrioProductsListPage";
+import { activateAccount } from "./email.spec";
+import {pindrioWishlistPage} from "../pages/pindrioWishlistPage";
+import {pindrioProductsListPage} from "../pages/pindrioProductsListPage";
 
 const ctx = testContext();
 const ctxUnique = testContextUnique();
@@ -37,25 +37,25 @@ test.describe("User Flows", async () => {
     await expect(homePage.loggedInButton).toBeVisible();
   });
 
-  // Scenario: The user doesn't have an account and wants to sign up on the home page
-  // Given:
-  // The user is on the home page and wants so sign up.
-  // When:
-  // The user goes to the sign up page
-  // And Fills in the info
-  // And presses the continue button
-  // And logs into their email
-  // And clicks on the newly sent email from the platform
-  // Optional And clicks the 3 dots
-  // And presses the verify button which opens a new tab
-  // Then:
-  // The user is on a newly opened tab which says activation successful
-  test("Test Sign Up", async ({ page, browser }) => {
-    test.setTimeout(180_000);
+// Scenario: The user doesn't have an account and wants to sign up on the home page
+// Given:
+// The user is on the home page and wants so sign up.
+// When:
+// The user goes to the sign up page
+// And Fills in the info
+// And presses the continue button
+// And logs into their email
+// And clicks on the newly sent email from the platform
+// Optional And clicks the 3 dots
+// And presses the verify button which opens a new tab
+// Then:
+// The user is on a newly opened tab which says activation successful
+        test("Test Sign Up", async ({page, browser}) => {
+            test.setTimeout(180_000);
 
     const signUpPage = new pindrioSignUpPage(page);
 
-    await signUpPage.signUp(ctxUnique);
+            await signUpPage.signUp(ctxUnique);
 
     await activateAccount(browser);
   });

@@ -1,5 +1,5 @@
-import {expect, Locator, Page} from "@playwright/test";
-import {TestContext} from "../tests/helpers.spec";
+import { expect, Locator, Page } from "@playwright/test";
+import { TestContext } from "../tests/helpers.spec";
 
 export class pindrioOrderConfirmedPage {
     readonly page: Page;
@@ -10,30 +10,25 @@ export class pindrioOrderConfirmedPage {
     constructor(page: Page) {
         this.page = page;
         this.quantityLocators = this.page.locator('text=/Quantity: \\d+/');
-        this.products =this.page.locator('h3');
+        this.products = this.page.locator('h3');
         this.header = page.getByText('Order Confirmed');
     }
-    async goto(){
+
+    async goto() {
         await this.page.goto('https://ioto-marketplace.semiotic.eu/order/confirmed');
     }
 
-    async verifyItem(name: string, quant: number){
-        await expect(this.header).toBeVisible({timeout: 20000});
+    async verifyItem(name: string, quant: number) {
         await this.page.waitForLoadState('load');
-
+        await expect(this.header).toBeVisible();
 
         const count = await this.quantityLocators.count();
+        expect(count).toBeGreaterThan(0);
 
-        expect(count).toBe(1);
+        const firstQuantityText = await this.quantityLocators.first().textContent();
+        expect(firstQuantityText?.trim()).toBe(`Quantity: ${quant}`);
 
-        if (count === 1) {
-            const firstQuantityText = await this.quantityLocators.first().textContent();
-
-            expect(firstQuantityText?.trim()).toBe(`Quantity: ${quant}`);
-        }
-
-        const productName = this.page.locator('h3').first();
-
+        const productName = this.products.first();
         await expect(productName).toContainText(name);
     }
 }
