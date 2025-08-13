@@ -42,12 +42,12 @@ test.describe("User Flows", async () => {
   // The user is on the home page and wants so sign up.
   // When:
   // The user goes to the sign up page
-  // And Fills in the info
-  // And presses the continue button
+  // And fills in the sign up info
+  // And clicks the continue button
   // And logs into their email
   // And clicks on the newly sent email from the platform
   // Optional And clicks the 3 dots
-  // And presses the verify button which opens a new tab
+  // And clicks the verify button which opens a new tab
   // Then:
   // The user is on a newly opened tab which says activation successful
   test("Test Sign Up", async ({ page, browser }) => {
@@ -68,7 +68,7 @@ test.describe("User Flows", async () => {
   // And the user goes to their profile page by clicking the account button in the navbar
   // And goes to their profile tab
   // And fills in the values he wants to change
-  // And presses save
+  // And clicks save
   // And reloads the page so the changes take effect
   // And changes back the values
   // And clicks save again
@@ -88,6 +88,23 @@ test.describe("User Flows", async () => {
     await profilePage.editProfileRevert(ctx);
   });
 
+  // Scenario: The user wants to add an item to the cart and checkout
+  // Given:
+  // The user is logged in and wants to add an item to the cart
+  // When:
+  // The user goes to the home page
+  // And clicks on the "All Products" button
+  // And clicks on the "Electronice" tab
+  // And clicks on the "See all products" button
+  // And clicks on the "Add to cart" button for the first product
+  // And clicks on the "Go to Cart" button
+  // And clicks on the "Proceed to Checkout" button
+  // And fills in the checkout information
+  // And clicks on the "Proceed to Payment" button
+  // And fills in the payment information
+  // And clicks on the "Pay" button
+  // Then:
+  // The user is redirected to the order confirmation page and sees the item in the order details
   test("Checkout", async ({ page }) => {
     test.setTimeout(180_000);
 
@@ -114,6 +131,18 @@ test.describe("User Flows", async () => {
     );
   });
 
+  // Scenario: The user wants to add an item to the wishlist
+  // Given:
+  // The user is logged in and wants to add an item to the wishlist
+  // When:
+  // The user goes to the home page
+  // And clicks on the "All Products" button
+  // And clicks on the "Electronice" tab
+  // And clicks on the "See all products" button
+  // And clicks on the "Add to wishlist" button for the first product
+  // And clicks on the "View Wish List" button
+  // Then:
+  // The user is redirected to the wishlist page and sees the item in the wishlist
   test("Add to wishlist", async ({ page }) => {
     test.setTimeout(180000);
     const homePage = new pindrioHomePage(page);
