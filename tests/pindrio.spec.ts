@@ -158,7 +158,7 @@ test.describe("User Flows", async () => {
     });
     await expect(btnAllProducts).toBeVisible();
     await wishlistPage.page.hover(
-      "//button[@aria-label='open menu' and @class='flex items-center justify-center py-2 px-4']"
+        "//button[@aria-label='open menu' and @class='flex items-center justify-center py-2 px-4']"
     );
 
     const btnElectronice = wishlistPage.page.getByRole("button", {
@@ -169,8 +169,8 @@ test.describe("User Flows", async () => {
     await btnElectronice.click();
 
     const btnSeeAllProducts = wishlistPage.page
-      .getByRole("button", { name: "See all products" })
-      .first();
+        .getByRole("button", { name: "See all products" })
+        .first();
     await expect(btnSeeAllProducts).toBeVisible();
     await btnSeeAllProducts.click({ force: true });
 
@@ -178,23 +178,52 @@ test.describe("User Flows", async () => {
     await productsList.page.waitForLoadState("load");
 
     const indexToCheck = 13;
+
+    const _requestWishlist = productsList.page.waitForResponse(
+        (res) =>
+            res.request().method() === "POST" &&
+            res.status() === 200 &&
+            res.url().includes("/wish-item")
+    );
+
     await productsList.wishlistIcons.nth(indexToCheck).click();
     await productsList.page.waitForTimeout(3000);
     const nameToCheck = await productsList.itemsNames
-      .nth(indexToCheck)
-      .textContent();
+        .nth(indexToCheck)
+        .textContent();
+
+
+    const responseEditWishlist = await _requestWishlist;
+
+    if (!responseEditWishlist.ok()) {
+      console.error("API Failed when adding to wishlist:", responseEditWishlist.status());
+    } else {
+      const responseData: {
+        items: { variant: { title: string} };
+      } = await responseEditWishlist.json();
+
+      if (
+          responseData.items[0].variant.title.trim() === nameToCheck.trim()
+      ) {
+        console.log("The response data contains the specified value.");
+      } else {
+        console.error(
+            "The response data does not contain the specified value."
+        );
+      }
+    }
 
     await productsList.page
-      .locator(
-        ".small\\:flex.gap-1.p-2.text-sm.font-medium.hover\\:opacity-1\\/2"
-      )
-      .filter({ hasText: "Wishlist" })
-      .click();
+        .locator(
+            ".small\\:flex.gap-1.p-2.text-sm.font-medium.hover\\:opacity-1\\/2"
+        )
+        .filter({ hasText: "Wishlist" })
+        .click();
     await productsList.page.waitForLoadState("load");
 
     await productsList.page
-      .getByRole("button", { name: "View Wish List" })
-      .click();
+        .getByRole("button", { name: "View Wish List" })
+        .click();
     await productsList.page.waitForLoadState("load");
     await productsList.page.waitForTimeout(5000);
 
@@ -215,3 +244,4 @@ test.describe("User Flows", async () => {
     await wishlistPage2.removeEverythingFromWishlist();
   });
 });
+
