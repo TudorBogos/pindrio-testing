@@ -1,41 +1,16 @@
 import { test, expect } from "@playwright/test";
-import {
-  testContext,
-  addOneItemToCart,
-  testContextUnique,
-} from "./helpers.spec";
+import { testContext, addOneItemToCart, testContextUnique } from "./helpers";
 import { pindrioHomePage } from "../pages/pindrioHomePage";
 import { pindrioSignUpPage } from "../pages/pindrioSignUp";
 import { pindrioProfilePage } from "../pages/pindrioProfile";
 import { pindrioCart } from "../pages/pindrioCart";
-import { activateAccount } from "./email.spec";
+import { activateAccount } from "./email";
 import { pindrioWishlistPage } from "../pages/pindrioWishlistPage";
 import { pindrioProductsListPage } from "../pages/pindrioProductsListPage";
 
-const ctx = testContext();
-const ctxUnique = testContextUnique();
-
-// Scenario: Validate user login process
-// Given:
-// The user is on the home page and wants to login
-// When:
-// The user goes to the login page
-// And inputs the login information
-// And presses the login button
-// Then:
-// They are successfully logged in, by seeing their name instead of the default login button
-test.describe("User Flows", async () => {
-  test("Test Login", async ({ page }) => {
-    test.setTimeout(180_000);
-
-    const homePage = new pindrioHomePage(page);
-
-    const loginPage = await homePage.goToLogIn();
-
-    await loginPage.login(ctx);
-
-    await expect(homePage.loggedInButton).toBeVisible();
-  });
+test.describe.serial("User Flows", async () => {
+  const ctx = testContext();
+  const ctxUnique = testContextUnique();
 
   // Scenario: The user doesn't have an account and wants to sign up on the home page
   // Given:
@@ -58,6 +33,27 @@ test.describe("User Flows", async () => {
     await signUpPage.signUp(ctxUnique);
 
     await activateAccount(browser);
+  });
+
+  // Scenario: Validate user login process
+  // Given:
+  // The user is on the home page and wants to login
+  // When:
+  // The user goes to the login page
+  // And inputs the login information
+  // And presses the login button
+  // Then:
+  // They are successfully logged in, by seeing their name instead of the default login button
+  test("Test Login", async ({ page }) => {
+    test.setTimeout(180_000);
+
+    const homePage = new pindrioHomePage(page);
+
+    const loginPage = await homePage.goToLogIn();
+
+    await loginPage.login(ctxUnique);
+
+    await expect(homePage.loggedInButton).toBeVisible();
   });
 
   // Scenario: The user wants to update their profile
@@ -111,19 +107,19 @@ test.describe("User Flows", async () => {
     const homePage = new pindrioHomePage(page);
     const loginPage = await homePage.goToLogIn();
 
-    await loginPage.login(ctx);
+    await loginPage.login(ctxUnique);
 
     const cartPage = new pindrioCart(loginPage.page);
 
     await cartPage.removeEverythingFromCart();
 
-    await addOneItemToCart(page, ctx);
+    await addOneItemToCart(page, ctxUnique);
 
     const checkoutPage = await cartPage.performCheckout();
-    await checkoutPage.fillInfo(ctx);
+    await checkoutPage.fillInfo(ctxUnique);
     const paymentPage = await checkoutPage.proceedCheckout();
 
-    const orderConfirmed = await paymentPage.fillCardInfo(ctx);
+    const orderConfirmed = await paymentPage.fillCardInfo(ctxUnique);
 
     await orderConfirmed.verifyItem(
       "Wireless Game Joystick Controller Left and Right Handle for Nintendo Switch Pro",
@@ -147,7 +143,7 @@ test.describe("User Flows", async () => {
     test.setTimeout(180000);
     const homePage = new pindrioHomePage(page);
     const loginPage = await homePage.goToLogIn();
-    await loginPage.login(ctx);
+    await loginPage.login(ctxUnique);
     await loginPage.page.waitForLoadState("load");
 
     const wishlistPage = new pindrioWishlistPage(page);
@@ -158,7 +154,7 @@ test.describe("User Flows", async () => {
     });
     await expect(btnAllProducts).toBeVisible();
     await wishlistPage.page.hover(
-        "//button[@aria-label='open menu' and @class='flex items-center justify-center py-2 px-4']"
+      "//button[@aria-label='open menu' and @class='flex items-center justify-center py-2 px-4']"
     );
 
     const btnElectronice = wishlistPage.page.getByRole("button", {
@@ -169,8 +165,8 @@ test.describe("User Flows", async () => {
     await btnElectronice.click();
 
     const btnSeeAllProducts = wishlistPage.page
-        .getByRole("button", { name: "See all products" })
-        .first();
+      .getByRole("button", { name: "See all products" })
+      .first();
     await expect(btnSeeAllProducts).toBeVisible();
     await btnSeeAllProducts.click({ force: true });
 
@@ -180,50 +176,53 @@ test.describe("User Flows", async () => {
     const indexToCheck = 13;
 
     const _requestWishlist = productsList.page.waitForResponse(
-        (res) =>
-            res.request().method() === "POST" &&
-            res.status() === 200 &&
-            res.url().includes("/wish-item")
+      (res) =>
+        res.request().method() === "POST" &&
+        res.status() === 200 &&
+        res.url().includes("/wish-item")
     );
 
     await productsList.wishlistIcons.nth(indexToCheck).click();
     await productsList.page.waitForTimeout(3000);
     const nameToCheck = await productsList.itemsNames
-        .nth(indexToCheck)
-        .textContent();
-
+      .nth(indexToCheck)
+      .textContent();
 
     const responseEditWishlist = await _requestWishlist;
 
     if (!responseEditWishlist.ok()) {
-      console.error("API Failed when adding to wishlist:", responseEditWishlist.status());
+      console.error(
+        "API Failed when adding to wishlist:",
+        responseEditWishlist.status()
+      );
     } else {
       const responseData: {
-        items: { variant: { title: string} };
+        items: { variant: { title: string } };
       } = await responseEditWishlist.json();
 
       if (
-          responseData.items[0].variant.title.trim() === nameToCheck.trim()
+        nameToCheck !== null &&
+        responseData.items[0].variant.title.trim() === nameToCheck.trim()
       ) {
         console.log("The response data contains the specified value.");
       } else {
         console.error(
-            "The response data does not contain the specified value."
+          "The response data does not contain the specified value."
         );
       }
     }
 
     await productsList.page
-        .locator(
-            ".small\\:flex.gap-1.p-2.text-sm.font-medium.hover\\:opacity-1\\/2"
-        )
-        .filter({ hasText: "Wishlist" })
-        .click();
+      .locator(
+        ".small\\:flex.gap-1.p-2.text-sm.font-medium.hover\\:opacity-1\\/2"
+      )
+      .filter({ hasText: "Wishlist" })
+      .click();
     await productsList.page.waitForLoadState("load");
 
     await productsList.page
-        .getByRole("button", { name: "View Wish List" })
-        .click();
+      .getByRole("button", { name: "View Wish List" })
+      .click();
     await productsList.page.waitForLoadState("load");
     await productsList.page.waitForTimeout(5000);
 
@@ -244,4 +243,3 @@ test.describe("User Flows", async () => {
     await wishlistPage2.removeEverythingFromWishlist();
   });
 });
-

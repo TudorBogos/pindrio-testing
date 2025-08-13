@@ -1,5 +1,5 @@
 import { expect, Locator, Page } from "@playwright/test";
-import { TestContext } from "../tests/helpers.spec";
+import { TestContext } from "../tests/helpers";
 
 export class pindrioOrderConfirmedPage {
   readonly page: Page;

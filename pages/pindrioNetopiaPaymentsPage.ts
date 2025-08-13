@@ -1,5 +1,5 @@
 import { expect, Locator, Page } from "@playwright/test";
-import { TestContext } from "../tests/helpers.spec";
+import { TestContext } from "../tests/helpers";
 import { pindrioOrderConfirmedPage } from "./pindrioOrderConfirmedPage";
 
 export class pindrioNetopiaPaymentsPage {
@@ -12,6 +12,7 @@ export class pindrioNetopiaPaymentsPage {
   readonly returnToStoreButton: Locator;
   readonly phoneNRField: Locator;
   readonly continueButton: Locator;
+  readonly emailField: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -27,15 +28,23 @@ export class pindrioNetopiaPaymentsPage {
     });
     this.phoneNRField = page.getByRole("textbox", { name: "07xxxxxxxx" });
     this.continueButton = page.getByRole("button", { name: /^Continuă$/ });
+    this.emailField = page.getByRole("textbox", {
+      name: "popescu@myemail.com",
+    });
   }
 
   async fillCardInfo(ctx: TestContext) {
     await this.page.waitForLoadState("load");
     await this.page.waitForTimeout(5000);
 
-    if (await this.phoneNRField.isVisible()) {
-      await this.phoneNRField.fill(ctx.phone);
-    }
+    await expect(this.phoneNRField).toBeVisible();
+    await expect(this.emailField).toBeVisible();
+
+    await this.phoneNRField.clear();
+    await this.phoneNRField.fill(ctx.phone);
+
+    await this.emailField.clear();
+    await this.emailField.fill(ctx.email);
 
     if (await this.continueButton.isVisible()) {
       await expect(this.continueButton).toBeEnabled();

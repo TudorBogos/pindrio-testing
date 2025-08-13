@@ -1,5 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { acceptCookies, TestContext } from "../tests/helpers.spec";
+import { acceptCookies, TestContext } from "../tests/helpers";
 
 export class pindrioSignUpPage {
   readonly page: Page;
@@ -31,7 +31,9 @@ export class pindrioSignUpPage {
     this.createAccountButton = page.getByRole("button", {
       name: "Create account",
     });
-    this.failedAttempts = page.getByText("There were 5 failed attempts");
+    page.getByText(
+      "There were 5 failed attempts in a row. You have to wait one hour to try again"
+    );
     this.confRegistering = page.getByText("Thank you for registering.");
   }
 
@@ -75,13 +77,13 @@ export class pindrioSignUpPage {
 
       await this.createAccountButton.click();
 
-/*      const response = await _requestLogin;
+      const response = await _requestLogin;
       if (!response.ok()) {
         console.error("Signup failed:", response.status());
-      }*/
+      }
 
-      await this.page.waitForLoadState("load");
-      await expect(this.failedAttempts).toHaveCount(0);
+      await expect(this.confRegistering).toBeVisible({ timeout: 10000 });
+      console.log("Account created successfully.");
     } catch (error) {
       console.error("An error occurred during the sign-up process:", error);
     }

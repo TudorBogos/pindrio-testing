@@ -1,5 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { activateAccount } from "../tests/email.spec";
+import { activateAccount } from "../tests/email";
 import { getActiveResourcesInfo } from "process";
 
 export class pindrioActivationAccPage {

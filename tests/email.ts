@@ -1,6 +1,4 @@
-import { test, expect, Browser, chromium } from "@playwright/test";
-import { exec } from "child_process";
-import { log } from "console";
+import { expect, Browser } from "@playwright/test";
 import { pindrioActivationAccPage } from "../pages/pindrioActivationAccPage";
 
 export async function activateAccount(browser: Browser) {

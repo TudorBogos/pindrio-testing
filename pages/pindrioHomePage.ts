@@ -1,5 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { acceptCookies, TestContext } from "../tests/helpers.spec";
+import { acceptCookies, TestContext } from "../tests/helpers";
 import { pindrioLoginPage } from "./pindrioLogin";
 
 //Class for the home page url: /
