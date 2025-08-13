@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from "@playwright/test";
 import { acceptCookies, TestContext } from "../tests/helpers.spec";
 
 export class pindrioProfilePage {
@@ -44,13 +44,13 @@ export class pindrioProfilePage {
     await expect(this.profileLink).toBeVisible();
     await this.profileLink.click();
 
-        await expect(this.firstNameTextBox).toBeVisible();
-        await this.firstNameTextBox.click();
-        await this.firstNameTextBox.fill(ctx.firstName);
+    await expect(this.firstNameTextBox).toBeVisible();
+    await this.firstNameTextBox.click();
+    await this.firstNameTextBox.fill(ctx.firstName);
 
-        await expect(this.lastNameTextBox).toBeVisible();
-        await this.lastNameTextBox.click();
-        await this.lastNameTextBox.fill(ctx.lastName);
+    await expect(this.lastNameTextBox).toBeVisible();
+    await this.lastNameTextBox.click();
+    await this.lastNameTextBox.fill(ctx.lastName);
 
     await this.page.waitForTimeout(3000);
 
@@ -82,67 +82,82 @@ export class pindrioProfilePage {
 
     await this.page.waitForTimeout(3000);
 
-
-        const _requestEditProfile = this.page.waitForResponse(
-            (res) =>
-                res.request().method() === "POST" &&
-                res.status() === 200 &&
-                res.url().includes("/proxy/api/v1/store/customers/me")
-        );
-
-
-
-
-        await this.saveButton.waitFor({ state: 'visible' });
-        await this.saveButton.isEnabled();
-        await this.saveButton.click();
-
-
-        const responseEdit = await _requestEditProfile;
-
-
-        if (!responseEdit.ok()) {
-            console.error("API Failed when editing profile:", responseEdit.status());
-        } else {
-            const responseData: { customer: { id: string; first_name: string; last_name: string } } = await responseEdit.json();
-
-            if (responseData.customer.first_name === "TestName" && responseData.customer.last_name === "TestLastName") {
-                console.log("The response data contains the specified values.");
-            } else {
-                console.error("The response data does not contain the specified values.");
-            }
-        }
-
-        await expect(this.firstNameTextBox).toHaveValue('TestName');
-        await expect(this.lastNameTextBox).toHaveValue('TestLastName');
-
-
-        await this.goto();
-
-        await expect(this.profileLink).toBeVisible()
-        await  this.profileLink.click()
-
-        await expect(this.firstNameTextBox).toBeVisible();
-
-
-        await this.lastNameTextBox.click();
-        await this.lastNameTextBox.fill(ctx.lastName);
-
-        await this.firstNameTextBox.click();
-        await this.firstNameTextBox.fill(ctx.firstName);
-
-    await this.lastNameTextBox.click();
-    await this.lastNameTextBox.clear();
-    await this.lastNameTextBox.fill("Munteanu");
-
-    await this.page.reload({ waitUntil: "load" });
+    const _requestEditProfile = this.page.waitForResponse(
+      (res) =>
+        res.request().method() === "POST" &&
+        res.status() === 200 &&
+        res.url().includes("/customers/me")
+    );
 
     await this.saveButton.waitFor({ state: "visible" });
     await this.saveButton.isEnabled();
     await this.saveButton.click();
 
-        await expect(this.firstNameTextBox).toHaveValue(ctx.firstName);
-        await expect(this.lastNameTextBox).toHaveValue(ctx.lastName);
+    const responseEdit = await _requestEditProfile;
+
+    if (!responseEdit.ok()) {
+      console.error("API Failed when editing profile:", responseEdit.status());
+    } else {
+      const responseData: {
+        customer: { id: string; first_name: string; last_name: string };
+      } = await responseEdit.json();
+
+      if (
+        responseData.customer.first_name === "TestName" &&
+        responseData.customer.last_name === "TestLastName"
+      ) {
+        console.log("The response data contains the specified values.");
+      } else {
+        console.error(
+          "The response data does not contain the specified values."
+        );
+      }
     }
 
+    await expect(this.firstNameTextBox).toHaveValue("TestName");
+    await expect(this.lastNameTextBox).toHaveValue("TestLastName");
+
+    await this.goto();
+
+    await expect(this.profileLink).toBeVisible();
+    await this.profileLink.click();
+
+    await expect(this.firstNameTextBox).toBeVisible();
+
+    await this.lastNameTextBox.click();
+    await this.lastNameTextBox.fill(ctx.lastName);
+
+    await this.firstNameTextBox.click();
+    await this.firstNameTextBox.fill(ctx.firstName);
+
+    await this.saveButton.waitFor({ state: "visible" });
+    await this.saveButton.isEnabled();
+    await this.saveButton.click();
+
+    const responseEdit2 = await _requestEditProfile;
+
+    if (!responseEdit2.ok()) {
+      console.error("API Failed when editing profile:", responseEdit2.status());
+    } else {
+      const responseData: {
+        customer: { id: string; first_name: string; last_name: string };
+      } = await responseEdit2.json();
+
+      if (
+        responseData.customer.first_name === ctx.firstName &&
+        responseData.customer.last_name === ctx.lastName
+      ) {
+        console.log("The second response data contains the specified values.");
+      } else {
+        console.error(
+          "The second response data does not contain the specified values."
+        );
+      }
+    }
+
+    await this.page.reload({ waitUntil: "load" });
+
+    await expect(this.firstNameTextBox).toHaveValue(ctx.firstName);
+    await expect(this.lastNameTextBox).toHaveValue(ctx.lastName);
+  }
 }

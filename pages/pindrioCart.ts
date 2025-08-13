@@ -1,7 +1,7 @@
-import { expect, type Locator, type Page } from '@playwright/test';
-import { acceptCookies, TestContext } from '../tests/helpers.spec';
-import {pindrioLoginPage} from "./pindrioLogin";
-import {pindrioCheckoutPage} from "./pindrioCheckoutPage";
+import { expect, type Locator, type Page } from "@playwright/test";
+import { acceptCookies, TestContext } from "../tests/helpers.spec";
+import { pindrioLoginPage } from "./pindrioLogin";
+import { pindrioCheckoutPage } from "./pindrioCheckoutPage";
 
 export class pindrioCart {
   readonly page: Page;
@@ -30,7 +30,6 @@ export class pindrioCart {
   async removeEverythingFromCart() {
     await this.goto();
     await this.page.waitForLoadState("load");
-    await this.page.waitForLoadState("networkidle");
 
     await this.itemsExist.waitFor({ state: "visible" }).catch((e) => {});
 
@@ -40,36 +39,37 @@ export class pindrioCart {
         .filter({ hasText: "Remove" })
         .all();
 
-            if (removeButtons.length === 0) {
-            } else {
-                for (const button of removeButtons) {
-                    await button.waitFor({ state: 'visible' });
-                    try {
-                        await button.click();
-                        await this.page.waitForTimeout(1000);
-                    } catch (error) {
-                        console.error( error);
-                    }
-                }
-            }
-        } else if (await this.itemsDontExist.isVisible()) {
+      if (removeButtons.length === 0) {
+      } else {
+        for (const button of removeButtons) {
+          await button.waitFor({ state: "visible" });
+          try {
+            await button.click();
+            await this.page.waitForTimeout(1000);
+          } catch (error) {
+            console.error(error);
+          }
         }
+      }
+    } else if (await this.itemsDontExist.isVisible()) {
     }
-    async performCheckout(){
-        await this.goto();
-        await this.page.waitForLoadState('load');
+  }
+  async performCheckout() {
+    await this.goto();
+    await this.page.waitForLoadState("load");
 
-        await this.checkoutButton.click();
-        await this.checkoutButton.click();
-        await this.checkoutButton.click();
-        await this.checkoutButton.click();
-        await this.checkoutButton.click();
-        await this.page.waitForLoadState("load");
-        await this.page.waitForLoadState("networkidle");
-        await expect(this.page.getByRole('heading', { name: 'Summary', exact: true }).locator('span').first()).toBeVisible();
-        return new pindrioCheckoutPage(this.page);
-
-
-    }
-
+    await this.checkoutButton.click();
+    await this.checkoutButton.click();
+    await this.checkoutButton.click();
+    await this.checkoutButton.click();
+    await this.checkoutButton.click();
+    await this.page.waitForLoadState("load");
+    await expect(
+      this.page
+        .getByRole("heading", { name: "Summary", exact: true })
+        .locator("span")
+        .first()
+    ).toBeVisible();
+    return new pindrioCheckoutPage(this.page);
+  }
 }

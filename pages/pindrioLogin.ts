@@ -50,6 +50,13 @@ export class pindrioLoginPage {
 
       const _requestLogin = this.page.waitForResponse(
         (res) =>
+          res.request().method() === "POST" &&
+          res.status() === 200 &&
+          res.url().includes("/auth")
+      );
+
+      const _getLogin = this.page.waitForResponse(
+        (res) =>
           res.request().method() === "GET" &&
           res.status() === 200 &&
           res.url().includes("/me")
@@ -57,12 +64,30 @@ export class pindrioLoginPage {
 
       await this.logInButton.click();
 
-      const response = await _requestLogin;
-      if (!response.ok()) {
-        console.error("Login failed:", response.status());
+      const responseAuth = await _requestLogin;
+      const responseGet = await _getLogin;
+      if (!responseAuth.ok()) {
+        console.error("Auth response:", responseAuth.status());
+      } else if (!responseGet.ok()) {
+        console.error("Get response:", responseGet.status());
+      }
+
+      const responseDataAuth = await responseAuth.json();
+      if (responseDataAuth.error) {
+        throw new Error(`Login failed: ${responseDataAuth.error}`);
+      }
+      const responseDataGet = await responseGet.json();
+      if (responseDataGet.error) {
+        throw new Error(`Get user data failed: ${responseDataGet.error}`);
+      }
+      // Check if responseDataGet.customer.id matches the responseDataAuth.customer.id
+      if (responseDataGet.customer.id !== responseDataAuth.customer.id) {
+        throw new Error("Customer ID mismatch");
       } else {
-        const responseData = await response.json();
-        console.log(responseData);
+        console.log(
+          "Login successful, customer ID matches: " +
+            responseDataGet.customer.id
+        );
       }
 
       await this.page.waitForLoadState("load");
