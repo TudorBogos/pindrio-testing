@@ -45,8 +45,6 @@ export async function activateAccount(browser: Browser) {
     await expect(email_row).toBeVisible();
     await email_row.click();
 
-    await page.waitForLoadState("load");
-
     //Dots are visible if there's an ongoing conversation in GMAIL
     try {
       await expect(dots).toBeVisible();
