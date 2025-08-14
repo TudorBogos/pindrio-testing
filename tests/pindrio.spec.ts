@@ -77,11 +77,11 @@ test.describe.serial("User Flows", async () => {
     const homePage = new pindrioHomePage(page);
     const loginPage = await homePage.goToLogIn();
 
-    await loginPage.login(ctx);
+    await loginPage.login(ctxUnique);
 
     const profilePage = new pindrioProfilePage(loginPage.page);
 
-    await profilePage.editProfileRevert(ctx);
+    await profilePage.editProfileRevert(ctxUnique);
   });
 
   // Scenario: The user wants to add an item to the cart and checkout
